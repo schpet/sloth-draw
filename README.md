@@ -1,1 +1,7 @@
-just a countdown until 6:41pm on christmas day no big deal
+DRAW SLOTHS
+
+TODO
+
+  - touchstart touchend for touchscreens DUH
+  - save / load via stupidly long urls!!!
+  - eraser? size changer? whatever!
