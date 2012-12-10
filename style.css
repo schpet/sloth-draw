@@ -4,8 +4,12 @@
   height: 38px;
   position: absolute;
 }
-body {
+#sloth-board {
+  width: 100%;
+  height: 100%;
 }
 html {
+  width: 100%;
+  height: 100%;
   cursor: url("img/forsloths.png") 75 -100, auto !important;
 }
