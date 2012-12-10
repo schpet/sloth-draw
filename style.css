@@ -1,0 +1,11 @@
+.sloth {
+  background: url("img/slothpal.png");
+  width: 50px;
+  height: 38px;
+  position: absolute;
+}
+body {
+}
+html {
+  cursor: url("img/forsloths.png") 75 -100, auto !important;
+}
