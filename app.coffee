@@ -72,10 +72,8 @@ handleFileSelect = (evt) ->
     reader.onload = ((theFile) ->
       (e) ->
         $img = $("<img src=\"#{e.target.result}\" />")
-        #$img.on 'mousedown', ->
-          #event.preventDefault()
-
         $('#image').html($img)
+        $('.sloth').remove()
 
         localStorage.setItem "img", e.target.result
     )(f)

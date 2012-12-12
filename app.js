@@ -79,6 +79,7 @@
           var $img;
           $img = $("<img src=\"" + e.target.result + "\" />");
           $('#image').html($img);
+          $('.sloth').remove();
           return localStorage.setItem("img", e.target.result);
         };
       })(f);
