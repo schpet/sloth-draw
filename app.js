@@ -1,5 +1,5 @@
 (function() {
-  var $canvas, dragging, drawSloth, prev;
+  var $canvas, dragging, drawSloth, handleFileSelect, prev;
 
   dragging = false;
 
@@ -36,7 +36,11 @@
     return dragging = false;
   });
 
-  $(document).on('selectstart', false);
+  $(document).on('selectstart dragstart', false);
+
+  $('.file-chooser').on('mousedown', function(e) {
+    return e.stopPropagation();
+  });
 
   $(document).on('mousemove', function(e) {
     if (!dragging) return;
@@ -56,5 +60,34 @@
     });
     debugger;
   });
+
+  handleFileSelect = function(evt) {
+    var f, files, i, reader, _results;
+    files = evt.target.files;
+    i = 0;
+    f = void 0;
+    _results = [];
+    while (f = files[i]) {
+      if (!f.type.match("image.*")) continue;
+      reader = new FileReader();
+      reader.onload = (function(theFile) {
+        return function(e) {
+          var $img;
+          $img = $("<img src=\"" + e.target.result + "\" />");
+          $img.on('mousedown', function() {
+            event.preventDefault();
+            return false;
+          });
+          $('#image').html($img);
+          return localStorage.setItem("img", e.target.result);
+        };
+      })(f);
+      reader.readAsDataURL(f);
+      _results.push(i++);
+    }
+    return _results;
+  };
+
+  $(document).on('change', handleFileSelect);
 
 }).call(this);
