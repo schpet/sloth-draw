@@ -36,7 +36,11 @@
     return dragging = false;
   });
 
-  $(document).on('selectstart dragstart', false);
+  $(document).on('selectstart dragstart', function(e) {
+    return e.preventDefault();
+  });
+
+  document.body.style.MozUserSelect = "none";
 
   $('.file-chooser').on('mousedown', function(e) {
     return e.stopPropagation();
@@ -74,10 +78,6 @@
         return function(e) {
           var $img;
           $img = $("<img src=\"" + e.target.result + "\" />");
-          $img.on('mousedown', function() {
-            event.preventDefault();
-            return false;
-          });
           $('#image').html($img);
           return localStorage.setItem("img", e.target.result);
         };

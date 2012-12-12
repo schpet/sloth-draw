@@ -28,7 +28,11 @@ $(document).on 'mouseup mouseexit', (e)->
   dragging = false
 
 # http://stackoverflow.com/questions/6388284
-$(document).on 'selectstart dragstart', false
+$(document).on 'selectstart dragstart', (e)->
+  e.preventDefault()
+
+# http://stackoverflow.com/a/2931668/692224
+document.body.style.MozUserSelect="none"
 
 $('.file-chooser').on 'mousedown', (e)->
   e.stopPropagation()
@@ -68,9 +72,8 @@ handleFileSelect = (evt) ->
     reader.onload = ((theFile) ->
       (e) ->
         $img = $("<img src=\"#{e.target.result}\" />")
-        $img.on 'mousedown', ->
-          event.preventDefault()
-          false
+        #$img.on 'mousedown', ->
+          #event.preventDefault()
 
         $('#image').html($img)
 
