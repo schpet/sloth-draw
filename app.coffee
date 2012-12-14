@@ -1,7 +1,4 @@
-$(window).load ->
-  $(document).on 'resize', ->
-    console.log 'resized'
-
+slothdrawin = ->
   dragging = false
   prev = { x: -100, y: -100 }
 
@@ -166,3 +163,11 @@ $(window).load ->
 
   $(document).on 'change', handleFileSelect
 
+tryToSetup = ->
+  if $(window).width() == 0 || $(window).height() == 0
+    setTimeout(tryToSetup, 20)
+    return
+
+  slothdrawin()
+
+$(window).load tryToSetup
