@@ -12,8 +12,8 @@ $(document).ready ->
   offset = $canvas.offset()
   borderSize = parseInt($canvas.css("border-left-width"))
 
-  canvas.width = $(document).width() - $('#tools').width() - borderSize * 2
-  canvas.height = $(document).height() - $('#tools').height() - borderSize * 2
+  canvas.width = $(window).width() - $('#tools').width() - borderSize * 2
+  canvas.height = $(window).height() - borderSize * 2
   ctx = canvas.getContext '2d'
 
   # set up bg canvas
