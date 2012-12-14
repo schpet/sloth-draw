@@ -1,5 +1,5 @@
 (function() {
-  var $canvas, dragging, drawSloth, handleFileSelect, prev;
+  var $canvas, bgCanvas, bgCtx, borderSize, canvas, ctx, dragging, drawAction, drawSloth, erase, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode;
 
   dragging = false;
 
@@ -8,33 +8,102 @@
     y: -100
   };
 
-  $canvas = $('#sloth-board');
+  sloth = new Image();
+
+  imageLoaded = false;
+
+  canvas = document.getElementById('sloth-board');
+
+  $canvas = $(canvas);
+
+  offset = $canvas.offset();
+
+  borderSize = parseInt($canvas.css("border-left-width"));
+
+  canvas.width = $canvas.parent().width() - borderSize * 2;
+
+  canvas.height = $canvas.parent().height() - borderSize * 2;
+
+  ctx = canvas.getContext('2d');
+
+  bgCanvas = document.getElementById('bg-canvas');
+
+  bgCanvas.width = canvas.width;
+
+  bgCanvas.height = canvas.height;
+
+  bgCtx = bgCanvas.getContext('2d');
+
+  sloth.onload = function() {
+    return imageLoaded = true;
+  };
+
+  sloth.src = 'img/slothpal.png';
 
   drawSloth = function(e) {
     var threshhold, x, y;
-    x = e.pageX;
-    y = e.pageY;
+    if (!imageLoaded) return;
+    x = e.pageX - offset.left - borderSize;
+    y = e.pageY - offset.top - borderSize;
     threshhold = 16;
     if (Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold) {
       return;
     }
-    $canvas.append();
-    $('<div class="sloth" />').css({
-      'left': "" + x + "px",
-      'top': "" + y + "px"
-    }).appendTo($canvas);
+    ctx.globalCompositeOperation = "source-over";
+    ctx.drawImage(sloth, x, y);
     prev.x = x;
     return prev.y = y;
   };
 
+  erase = function(e) {
+    var radius, x, y;
+    x = e.pageX - offset.left - borderSize;
+    y = e.pageY - offset.top - borderSize;
+    radius = 20;
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.strokeStyle = "rgba(0,0,0,1)";
+    ctx.beginPath();
+    ctx.arc(x + radius, y + radius, radius, 0, 2 * Math.PI, false);
+    ctx.closePath();
+    return ctx.fill();
+  };
+
+  reset = function() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return bgCtx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  $('#reset').on('click', reset);
+
+  drawAction = drawSloth;
+
   $(document).on('mousedown', function(e) {
     dragging = true;
-    return drawSloth(e);
+    return drawAction(e);
   });
 
   $(document).on('mouseup mouseexit', function(e) {
     return dragging = false;
   });
+
+  $(document).on('mousemove', function(e) {
+    if (!dragging) return;
+    return drawAction(e);
+  });
+
+  slothMode = function() {
+    $('#sloth-board').removeClass('erase');
+    return drawAction = drawSloth;
+  };
+
+  eraseMode = function() {
+    $('#sloth-board').addClass('erase');
+    return drawAction = erase;
+  };
+
+  $('#eraser').on('click', eraseMode);
+
+  $('#sloth').on('click', slothMode);
 
   $(document).on('selectstart dragstart', function(e) {
     return e.preventDefault();
@@ -42,27 +111,17 @@
 
   document.body.style.MozUserSelect = "none";
 
-  $('.file-chooser').on('mousedown', function(e) {
-    return e.stopPropagation();
-  });
-
-  $(document).on('mousemove', function(e) {
-    if (!dragging) return;
-    return drawSloth(e);
-  });
-
-  $('.js-save').on('click', function() {
-    var coords;
-    coords = [];
-    $('.sloth').each(function() {
-      var pos;
-      pos = $(this).position();
-      return coords.push({
-        x: pos.left,
-        y: pos.top
-      });
-    });
-    debugger;
+  $('#save').on('click', function() {
+    var data, mime, oCtx, output;
+    output = document.createElement('canvas');
+    output.width = canvas.width;
+    output.height = canvas.height;
+    oCtx = output.getContext('2d');
+    oCtx.drawImage(bgCanvas, 0, 0);
+    oCtx.drawImage(canvas, 0, 0);
+    mime = "image/png";
+    data = output.toDataURL(mime);
+    return window.open(data, 'sloth.png');
   });
 
   handleFileSelect = function(evt) {
@@ -76,11 +135,27 @@
       reader = new FileReader();
       reader.onload = (function(theFile) {
         return function(e) {
-          var $img;
-          $img = $("<img src=\"" + e.target.result + "\" />");
-          $('#image').html($img);
-          $('.sloth').remove();
-          return localStorage.setItem("img", e.target.result);
+          var img;
+          img = new Image();
+          img.onload = function() {
+            var gapX, gapY, h, r, w;
+            w = img.width;
+            h = img.height;
+            r = w / h;
+            if (img.width > canvas.width) {
+              w = canvas.width;
+              h = w / r;
+            }
+            if (img.height > canvas.height) {
+              h = canvas.height;
+              w = h * r;
+            }
+            gapX = canvas.width - w;
+            gapY = canvas.height - h;
+            reset();
+            return bgCtx.drawImage(img, gapX / 2, gapY / 2, w, h);
+          };
+          return img.src = e.target.result;
         };
       })(f);
       reader.readAsDataURL(f);

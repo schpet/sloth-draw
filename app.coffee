@@ -1,60 +1,117 @@
 dragging = false
 prev = { x: -100, y: -100 }
 
-$canvas = $('#sloth-board')
+sloth = new Image()
+imageLoaded = false
+
+# set up canvas
+canvas = document.getElementById('sloth-board')
+$canvas = $(canvas)
+offset = $canvas.offset()
+borderSize = parseInt($canvas.css("border-left-width"))
+canvas.width = $canvas.parent().width() - borderSize * 2
+canvas.height = $canvas.parent().height() - borderSize * 2
+ctx = canvas.getContext '2d'
+
+# set up bg canvas
+bgCanvas = document.getElementById 'bg-canvas'
+bgCanvas.width = canvas.width
+bgCanvas.height = canvas.height
+bgCtx = bgCanvas.getContext '2d'
+
+sloth.onload = ->
+  imageLoaded = true
+
+sloth.src = 'img/slothpal.png'
 
 drawSloth = (e) ->
-  x = e.pageX
-  y = e.pageY
+  return unless imageLoaded
+  x = e.pageX - offset.left - borderSize
+  y = e.pageY - offset.top - borderSize
 
   threshhold =  16
   if Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold
     return
 
-  $canvas.append()
-
-  $('<div class="sloth" />')
-    .css('left': "#{x}px", 'top': "#{y}px")
-    .appendTo($canvas)
+  ctx.globalCompositeOperation = "source-over"
+  ctx.drawImage(sloth, x, y)
 
   prev.x = x
   prev.y = y
 
+erase = (e)->
+  x = e.pageX - offset.left - borderSize
+  y = e.pageY - offset.top - borderSize
+  radius = 20
+  ctx.globalCompositeOperation = "destination-out"
+  ctx.strokeStyle = "rgba(0,0,0,1)"
+  ctx.beginPath()
+  ctx.arc(x + radius, y + radius, radius, 0 , 2 * Math.PI, false)
+  ctx.closePath()
+  ctx.fill()
+
+reset = ->
+  ctx.clearRect(0,0, canvas.width, canvas.height)
+  bgCtx.clearRect(0, 0, canvas.width, canvas.height)
+
+$('#reset').on 'click', reset
+
+
+drawAction = drawSloth
+
 $(document).on 'mousedown', (e)->
   dragging = true
-  drawSloth(e)
+  drawAction(e)
 
 $(document).on 'mouseup mouseexit', (e)->
   dragging = false
-
-# http://stackoverflow.com/questions/6388284
-$(document).on 'selectstart dragstart', (e)->
-  e.preventDefault()
-
-# http://stackoverflow.com/a/2931668/692224
-document.body.style.MozUserSelect="none"
-
-$('.file-chooser').on 'mousedown', (e)->
-  e.stopPropagation()
 
 $(document).on 'mousemove', (e)->
   if !dragging
     return
 
-  drawSloth(e)
+  drawAction(e)
 
+slothMode = ->
+  $('#sloth-board').removeClass('erase')
+  drawAction = drawSloth
 
-$('.js-save').on 'click', ->
-  coords = []
-  $('.sloth').each ->
-    pos = $(this).position()
-    coords.push
-      x: pos.left
-      y: pos.top
+eraseMode = ->
+  $('#sloth-board').addClass('erase')
+  drawAction = erase
 
-  debugger
+$('#eraser').on 'click', eraseMode
+$('#sloth').on 'click', slothMode
 
-# http://stackoverflow.com/a/11583627/692224
+# http://stackoverflow.com/questions/6388284
+$(document).on 'selectstart dragstart', (e)->
+  e.preventDefault()
+
+## http://stackoverflow.com/a/2931668/692224
+document.body.style.MozUserSelect="none"
+
+#$('.js-save').on 'click', ->
+  #coords = []
+  #$('.sloth').each ->
+    #pos = $(this).position()
+    #coords.push
+      #x: pos.left
+      #y: pos.top
+
+  #debugger
+
+$('#save').on 'click', ->
+  output = document.createElement 'canvas'
+  output.width = canvas.width
+  output.height = canvas.height
+  oCtx = output.getContext '2d'
+  oCtx.drawImage bgCanvas, 0, 0
+  oCtx.drawImage canvas, 0, 0
+  mime = "image/png"
+  data = output.toDataURL mime
+  window.open(data, 'sloth.png')
+
+## http://stackoverflow.com/a/11583627/692224
 handleFileSelect = (evt) ->
   files = evt.target.files # FileList object
 
@@ -71,14 +128,31 @@ handleFileSelect = (evt) ->
     # Closure to capture the file information.
     reader.onload = ((theFile) ->
       (e) ->
-        $img = $("<img src=\"#{e.target.result}\" />")
-        $('#image').html($img)
-        $('.sloth').remove()
+        img = new Image()
+        img.onload = ->
 
-        localStorage.setItem "img", e.target.result
+
+          w = img.width
+          h = img.height
+          r = w / h
+
+          if img.width > canvas.width
+            w = canvas.width
+            h = w / r
+
+          if img.height > canvas.height
+            h = canvas.height
+            w = h * r
+
+          gapX = canvas.width - w
+          gapY = canvas.height - h
+
+          reset()
+          bgCtx.drawImage(img, gapX / 2, gapY / 2, w, h)
+
+        img.src = e.target.result
     )(f)
 
-    # Read in the image file as a data URL.
     reader.readAsDataURL f
     i++
 

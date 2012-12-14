@@ -8,12 +8,22 @@
     <link href="style.css" rel="stylesheet">
   </head>
   <body>
-    <div id="image"></div>
-    <div id="sloth-board"></div>
-
-    <div class="file-chooser">
-      <input type="file" id="files" name="files[]" multiple />
+    <div id="tools">
+      <button id="save">Save</button>
+      <button id="eraser">Eraser</button>
+      <button id="sloth">Sloth</button>
+      <!--<button>Reset</button>-->
+      <div class="upload-container">
+        <button class="fake-button">Upload</button>
+        <input type="file" id="files" name="files[]" multiple />
+      </div>
+      <button id="reset">Reset</button>
     </div>
+    <div id="canvas-container">
+      <canvas id="bg-canvas"></canvas>
+      <canvas id="sloth-board"></canvas>
+    </div>
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="app.js"></script>
   </body>
