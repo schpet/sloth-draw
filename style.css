@@ -40,6 +40,7 @@ body, canvas, div {
 }
 #sloth-board.erase {
   cursor: url("img/eraser.png") 0 0, auto;
+  opacity: 0.5;
 }
 #image {
   text-align: center;
