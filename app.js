@@ -1,7 +1,10 @@
 (function() {
 
-  $(document).ready(function() {
+  $(window).load(function() {
     var $canvas, bgCanvas, bgCtx, borderSize, canvas, ctx, dragging, drawAction, drawSloth, erase, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode;
+    $(document).on('resize', function() {
+      return console.log('resized');
+    });
     dragging = false;
     prev = {
       x: -100,

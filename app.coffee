@@ -1,4 +1,6 @@
-$(document).ready ->
+$(window).load ->
+  $(document).on 'resize', ->
+    console.log 'resized'
 
   dragging = false
   prev = { x: -100, y: -100 }
@@ -14,6 +16,7 @@ $(document).ready ->
 
   console.log [ $(window).width(), $('#tools').width(), borderSize * 2 ]
   console.log [ $(window).height() , borderSize * 2]
+
   canvas.width = $(window).width() - $('#tools').width() - borderSize * 2
   canvas.height = $(window).height() - borderSize * 2
   ctx = canvas.getContext '2d'
