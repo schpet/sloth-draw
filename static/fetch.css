@@ -1,0 +1,24 @@
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+a {
+  text-decoration: none;
+}
+.container {
+  text-align: center;
+  overflow: hidden;
+}
+.container img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.promo {
+  float: left;
+  padding-top: 20px;
+  width: 80px;
+  background: #eee;
+  color: white;
+  height: 100%;
+}
