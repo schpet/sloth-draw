@@ -41,7 +41,7 @@ class Draw(webapp2.RequestHandler):
             u_suck = e
             print u_suck
 
-class Fetch(webapp2.RequestHandler):
+class FetchSloth(webapp2.RequestHandler):
     def get(self, sloth_path):
         sloth = SlothDrawing.get_by_key_name(sloth_path)
 
@@ -54,6 +54,10 @@ class Fetch(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'image/png'
         self.response.out.write(sloth.image)
 
+class Fetch(webapp2.RequestHandler):
+    def get(self, sloth_path):
+        template = jinja_environment.get_template('fetch.html')
+        self.response.out.write(template.render({'sloth_path': sloth_path}))
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -62,5 +66,6 @@ class MainPage(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([(r'/', MainPage),
                                (r'/draw', Draw),
+                               (r'/(\w+)\.png', FetchSloth),
                                (r'/(\w+)', Fetch)],
                               debug=True)
