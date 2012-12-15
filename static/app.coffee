@@ -113,14 +113,14 @@ slothdrawin = ->
 
       data:
         'image': data
-        'key_name': new Date().getTime()
+        'key_name': prompt "Give this sloth some words"
 
       success: (response)->
         window.location.href = response.path
 
       error: (response)->
         if response.status == 409
-          alert 'yo that url is taken :-('
+          alert 'yo that url is taken :-( try saving again with a different one'
         else
           alert 'somethings fucked tell peter@peterschilling.org'
 

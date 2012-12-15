@@ -102,14 +102,14 @@
         type: 'POST',
         data: {
           'image': data,
-          'key_name': new Date().getTime()
+          'key_name': prompt("Give this sloth some words")
         },
         success: function(response) {
           return window.location.href = response.path;
         },
         error: function(response) {
           if (response.status === 409) {
-            return alert('yo that url is taken :-(');
+            return alert('yo that url is taken :-( try saving again with a different one');
           } else {
             return alert('somethings fucked tell peter@peterschilling.org');
           }

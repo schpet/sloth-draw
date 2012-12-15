@@ -8,6 +8,10 @@ from google.appengine.api import images, files
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
+#
+# ((-)_(-))!!!! Thats a sloth by the way!
+#
+
 class SlothDrawing(db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
     image = db.BlobProperty()
