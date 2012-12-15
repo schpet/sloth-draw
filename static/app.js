@@ -2,12 +2,13 @@
   var slothdrawin, tryToSetup;
 
   slothdrawin = function() {
-    var $canvas, bgCanvas, bgCtx, borderSize, canvas, ctx, dragging, drawAction, drawSloth, erase, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode;
+    var $canvas, bgCanvas, bgCtx, borderSize, canvas, ctx, dragging, drawAction, drawSloth, erase, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode, slothcount;
     dragging = false;
     prev = {
       x: -100,
       y: -100
     };
+    slothcount = 0;
     sloth = new Image();
     imageLoaded = false;
     canvas = document.getElementById('sloth-board');
@@ -26,7 +27,7 @@
     sloth.onload = function() {
       return imageLoaded = true;
     };
-    sloth.src = 'img/slothpal.png';
+    sloth.src = 'static/img/slothpal.png';
     drawSloth = function(e) {
       var threshhold, x, y;
       if (!imageLoaded) return;
@@ -39,7 +40,9 @@
       ctx.globalCompositeOperation = "source-over";
       ctx.drawImage(sloth, x, y);
       prev.x = x;
-      return prev.y = y;
+      prev.y = y;
+      slothcount++;
+      return console.log(slothcount);
     };
     erase = function(e) {
       var radius, x, y;
@@ -94,7 +97,24 @@
       oCtx.drawImage(canvas, 0, 0);
       mime = "image/png";
       data = output.toDataURL(mime);
-      return window.open(data, 'sloth.png');
+      return $.ajax({
+        url: '/draw',
+        type: 'POST',
+        data: {
+          'image': data,
+          'key_name': new Date().getTime()
+        },
+        success: function(response) {
+          return window.location.href = response.path;
+        },
+        error: function(response) {
+          if (response.status === 409) {
+            return alert('yo that url is taken :-(');
+          } else {
+            return alert('somethings fucked tell peter@peterschilling.org');
+          }
+        }
+      });
     });
     handleFileSelect = function(evt) {
       var f, files, i, reader, _results;

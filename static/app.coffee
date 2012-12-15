@@ -1,6 +1,7 @@
 slothdrawin = ->
   dragging = false
   prev = { x: -100, y: -100 }
+  slothcount = 0
 
   sloth = new Image()
   imageLoaded = false
@@ -27,7 +28,7 @@ slothdrawin = ->
   sloth.onload = ->
     imageLoaded = true
 
-  sloth.src = 'img/slothpal.png'
+  sloth.src = 'static/img/slothpal.png'
 
   drawSloth = (e) ->
     return unless imageLoaded
@@ -43,6 +44,8 @@ slothdrawin = ->
 
     prev.x = x
     prev.y = y
+    slothcount++
+    console.log slothcount
 
   erase = (e)->
     x = e.pageX - offset.left - borderSize
@@ -95,16 +98,6 @@ slothdrawin = ->
   ## http://stackoverflow.com/a/2931668/692224
   document.body.style.MozUserSelect="none"
 
-  #$('.js-save').on 'click', ->
-    #coords = []
-    #$('.sloth').each ->
-      #pos = $(this).position()
-      #coords.push
-        #x: pos.left
-        #y: pos.top
-
-    #debugger
-
   $('#save').on 'click', ->
     output = document.createElement 'canvas'
     output.width = canvas.width
@@ -114,7 +107,24 @@ slothdrawin = ->
     oCtx.drawImage canvas, 0, 0
     mime = "image/png"
     data = output.toDataURL mime
-    window.open(data, 'sloth.png')
+    $.ajax
+      url: '/draw'
+      type: 'POST'
+
+      data:
+        'image': data
+        'key_name': new Date().getTime()
+
+      success: (response)->
+        window.location.href = response.path
+
+      error: (response)->
+        if response.status == 409
+          alert 'yo that url is taken :-('
+        else
+          alert 'somethings fucked tell peter@peterschilling.org'
+
+    #window.open(data, 'sloth.png')
 
   ## http://stackoverflow.com/a/11583627/692224
   handleFileSelect = (evt) ->
