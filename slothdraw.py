@@ -67,7 +67,7 @@ class Fetch(webapp2.RequestHandler):
             'sloth_path': sloth_path,
 
             'twitter_share_url':
-                'https://twitter.com/share?text=' + share_url_enc,
+                'https://twitter.com/share',
 
             'facebook_share_url':
                 'https://www.facebook.com/sharer/sharer.php?u=' + share_url_enc
