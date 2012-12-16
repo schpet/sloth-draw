@@ -10,13 +10,9 @@ slothdrawin = ->
   canvas = document.getElementById('sloth-board')
   $canvas = $(canvas)
   offset = $canvas.offset()
-  borderSize = parseInt($canvas.css("border-left-width"))
 
-  console.log [ $(window).width(), $('#tools').width(), borderSize * 2 ]
-  console.log [ $(window).height() , borderSize * 2]
-
-  canvas.width = $(window).width() - $('#tools').width() - borderSize * 2
-  canvas.height = $(window).height() - borderSize * 2
+  canvas.width = $(window).width() - $('#tools').width()
+  canvas.height = $(window).height()
   ctx = canvas.getContext '2d'
 
   # set up bg canvas
@@ -32,15 +28,18 @@ slothdrawin = ->
 
   drawSloth = (e) ->
     return unless imageLoaded
-    x = e.pageX - offset.left - borderSize
-    y = e.pageY - offset.top - borderSize
+    x = e.pageX - offset.left
+    y = e.pageY - offset.top
+
+    slothsetX = -22
+    slothsetY = -22
 
     threshhold =  16
-    if Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold
+    if e.type == 'mousemove' and Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold
       return
 
     ctx.globalCompositeOperation = "source-over"
-    ctx.drawImage(sloth, x, y)
+    ctx.drawImage(sloth, x + slothsetX, y + slothsetY)
 
     prev.x = x
     prev.y = y
@@ -48,8 +47,8 @@ slothdrawin = ->
     console.log slothcount
 
   erase = (e)->
-    x = e.pageX - offset.left - borderSize
-    y = e.pageY - offset.top - borderSize
+    x = e.pageX - offset.left
+    y = e.pageY - offset.top
     radius = 20
     ctx.globalCompositeOperation = "destination-out"
     ctx.strokeStyle = "rgba(0,0,0,1)"
@@ -65,7 +64,7 @@ slothdrawin = ->
   $('#reset').on 'click', reset
 
 
-  drawAction = drawSloth
+  drawAction = null
 
   $(document).on 'mousedown', (e)->
     dragging = true
@@ -80,13 +79,22 @@ slothdrawin = ->
 
     drawAction(e)
 
+  activateButton = ($b)->
+    $(".active").removeClass 'active'
+    $b.addClass 'active'
+
   slothMode = ->
     $('#sloth-board').removeClass('erase')
+    $('#sloth').addClass('active')
+    activateButton($('#sloth'))
     drawAction = drawSloth
 
   eraseMode = ->
     $('#sloth-board').addClass('erase')
+    activateButton($('#eraser'))
     drawAction = erase
+
+  slothMode()
 
   $('#eraser').on 'click', eraseMode
   $('#sloth').on 'click', slothMode

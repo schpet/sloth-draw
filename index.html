@@ -8,16 +8,14 @@
     <link href="static/style.css" rel="stylesheet">
   </head>
   <body>
-    <div id="tools">
-      <button id="save">Save</button>
-      <button id="eraser">Eraser</button>
-      <button id="sloth">Sloth</button>
-      <!--<button>Reset</button>-->
-      <div class="upload-container">
-        <button class="fake-button">Upload</button>
+    <div id="tools" class="sidebar">
+      <button class="button icon-draw" id="sloth"></button>
+      <button class="button icon-erase" id="eraser"></button>
+      <div class="button upload-container">
+        <button class="icon-upload fake-button"></button>
         <input type="file" id="files" name="files[]" multiple />
       </div>
-      <button id="reset">Reset</button>
+      <button class="button icon-share" id="save"></button>
     </div>
     <div id="canvas-container">
       <canvas id="bg-canvas"></canvas>

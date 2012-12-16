@@ -4,6 +4,13 @@ body {
   height: 100%;
   overflow: hidden;
 }
+button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
 body, canvas, div {
   margin: 0;
   padding: 0;
@@ -15,13 +22,59 @@ body, canvas, div {
   position: absolute;
 }
 
-#tools {
-  padding-top: 20px;
-  width: 80px;
-  background: #eee;
+.sidebar {
+  padding-top: 18px;
+  width: 68px;
+  background: #212121;
   color: white;
   float: left;
   height: 100%;
+}
+.sidebar .logo {
+  margin: 10px;
+  background: url('img/sprite.png');
+  border-radius: 4px;
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+.sidebar .button {
+  margin-left: 21px;
+  margin-bottom: 15px;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  margin-top: 1px;
+  line-height: 14px;
+  vertical-align: text-top;
+  background-image: url("img/sprite.png");
+  background-repeat: no-repeat;
+}
+.icon-share {
+  background-position: 0 -50px;
+}
+.icon-share.active {
+  background-position: 34px -50px;
+}
+.icon-upload {
+  background-position: 0 -85px;
+  height: 21px;
+}
+.icon-erase {
+  background-position: 0 -120px;
+}
+.icon-erase.active, .icon-erase:active  {
+  background-position: -34px -120px;
+}
+.icon-draw {
+  background-position: 0 -190px;
+}
+.icon-draw.active, .icon-draw:active {
+  background-position: -34px -190px;
 }
 #canvas-container {
   position: relative;
@@ -31,12 +84,11 @@ body, canvas, div {
 
 #bg-canvas, #sloth-board {
   position: absolute;
-  border: 20px solid #eee;
   top: 0;
   left: 0;
 }
 #sloth-board {
-  cursor: url("img/forsloths.png") 75 -100, auto;
+  cursor: url("img/forsloths.png") 0 0, auto;
 }
 #sloth-board.erase {
   cursor: url("img/eraser.png") 0 0, auto;
