@@ -77,6 +77,14 @@ class Fetch(webapp2.RequestHandler):
         if fetched is not None:
             self.response.out.write(fetched)
         else:
+            sloth = SlothDrawing.get_by_key_name(sloth_path)
+
+            if sloth == None:
+                self.response.set_status(404)
+                self.response.headers['Content-Type'] = 'text/plain'
+                self.response.out.write('booourns no sloths here check your url!')
+                return
+
 
             # smrt ppl wouldn't hard code this
             # i'm not claiming to be one of them
