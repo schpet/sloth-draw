@@ -4,19 +4,16 @@
     <meta charset="utf-8">
     <title>{{ sloth_path }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="static/fetch.css" rel="stylesheet">
+    <link href="static/style.css" rel="stylesheet">
   </head>
   <body>
-    <!--<div class="promo">-->
-      <!--<a href="/" title="Draw a sloth">-->
-        <!--Sloth Drawin'-->
-      <!--</a>-->
-      <!--[> TODO share buttons <]-->
-    <!--</div>-->
-    <div class="container">
-      <a href="{{ sloth_path }}.png">
-        <img src="{{ sloth_path }}.png" alt="{{ sloth_path }}" />
-      </a>
+    <div class="sidebar">
+      <a class="button icon-draw" href="/" title="Sloth Drawin'"></a>
+      <a class="button icon-twitter" href="{{ twitter_share_url }}" title="Share on the twitters" target="_blank"></a>
+      <a class="button icon-facebook" href="{{ facebook_share_url }}" title="Share on the fakebook" target="_blank"></a>
+    </div>
+    <div class="fetch-container">
+      <img src="{{ sloth_path }}.png" alt="{{ sloth_path }}" />
     </div>
     {% include 'analytics.html' %}
   </body>

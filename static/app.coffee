@@ -66,14 +66,14 @@ slothdrawin = ->
 
   drawAction = null
 
-  $(document).on 'mousedown', (e)->
+  $('#sloth-board').on 'mousedown', (e)->
     dragging = true
     drawAction(e)
 
-  $(document).on 'mouseup mouseexit', (e)->
+  $('#sloth-board').on 'mouseup mouseout', (e)->
     dragging = false
 
-  $(document).on 'mousemove', (e)->
+  $('#sloth-board').on 'mousemove', (e)->
     if !dragging
       return
 
@@ -107,6 +107,15 @@ slothdrawin = ->
   document.body.style.MozUserSelect="none"
 
   $('#save').on 'click', ->
+    slothWords = prompt "Give this sloth some words (or leave it blank)"
+
+    # handle user cancel
+    if slothWords == null
+      return
+
+    if slothWords == ''
+      slothWords = new Date().getTime()
+
     output = document.createElement 'canvas'
     output.width = canvas.width
     output.height = canvas.height
@@ -121,7 +130,7 @@ slothdrawin = ->
 
       data:
         'image': data
-        'key_name': prompt "Give this sloth some words"
+        'key_name': slothWords
 
       success: (response)->
         window.location.href = response.path
@@ -131,8 +140,6 @@ slothdrawin = ->
           alert 'yo that url is taken :-( try saving again with a different one'
         else
           alert 'somethings fucked tell peter@peterschilling.org'
-
-    #window.open(data, 'sloth.png')
 
   ## http://stackoverflow.com/a/11583627/692224
   handleFileSelect = (evt) ->

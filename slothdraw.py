@@ -1,6 +1,6 @@
 import webapp2
 import jinja2
-import os, urllib2, re, base64
+import os, urllib2, re, base64, urllib
 
 from google.appengine.ext import db
 from google.appengine.api import images, files
@@ -56,8 +56,23 @@ class FetchSloth(webapp2.RequestHandler):
 
 class Fetch(webapp2.RequestHandler):
     def get(self, sloth_path):
+
+        # smrt ppl wouldn't hard code this
+        # i'm not claiming to be one of them
+        share_url_enc = urllib.quote_plus('http://sloths.arerad.com/' +
+            sloth_path)
+
         template = jinja_environment.get_template('fetch.html')
-        self.response.out.write(template.render({'sloth_path': sloth_path}))
+        data = {
+            'sloth_path': sloth_path,
+
+            'twitter_share_url':
+                'https://twitter.com/share?text=' + share_url_enc,
+
+            'facebook_share_url':
+                'https://www.facebook.com/sharer/sharer.php?u=' + share_url_enc
+        }
+        self.response.out.write(template.render(data))
 
 class MainPage(webapp2.RequestHandler):
     def get(self):

@@ -29,6 +29,7 @@ body, canvas, div {
   color: white;
   float: left;
   height: 100%;
+  border-right: 1px solid #111;
 }
 .sidebar .logo {
   margin: 10px;
@@ -57,8 +58,8 @@ body, canvas, div {
 .icon-share {
   background-position: 0 -50px;
 }
-.icon-share.active {
-  background-position: 34px -50px;
+.icon-share:hover {
+  background-position: -34px -50px;
 }
 .icon-upload {
   background-position: 0 -85px;
@@ -75,6 +76,18 @@ body, canvas, div {
 }
 .icon-draw.active, .icon-draw:active {
   background-position: -34px -190px;
+}
+.icon-twitter {
+  background-position: 0 -220px;
+}
+.icon-twitter:hover {
+  background-position: -34px -220px;
+}
+.icon-facebook {
+  background-position: 0 -250px;
+}
+.icon-facebook:hover {
+  background-position: -34px -250px;
 }
 #canvas-container {
   position: relative;
@@ -112,4 +125,24 @@ body, canvas, div {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+
+
+/* FETCH */
+.fetch-container {
+  text-align: center;
+  overflow: hidden;
+}
+.fetch-container img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.promo {
+  float: left;
+  padding-top: 20px;
+  width: 80px;
+  background: #eee;
+  color: white;
+  height: 100%;
 }

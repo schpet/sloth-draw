@@ -61,14 +61,14 @@
     };
     $('#reset').on('click', reset);
     drawAction = null;
-    $(document).on('mousedown', function(e) {
+    $('#sloth-board').on('mousedown', function(e) {
       dragging = true;
       return drawAction(e);
     });
-    $(document).on('mouseup mouseexit', function(e) {
+    $('#sloth-board').on('mouseup mouseout', function(e) {
       return dragging = false;
     });
-    $(document).on('mousemove', function(e) {
+    $('#sloth-board').on('mousemove', function(e) {
       if (!dragging) return;
       return drawAction(e);
     });
@@ -95,7 +95,10 @@
     });
     document.body.style.MozUserSelect = "none";
     $('#save').on('click', function() {
-      var data, mime, oCtx, output;
+      var data, mime, oCtx, output, slothWords;
+      slothWords = prompt("Give this sloth some words (or leave it blank)");
+      if (slothWords === null) return;
+      if (slothWords === '') slothWords = new Date().getTime();
       output = document.createElement('canvas');
       output.width = canvas.width;
       output.height = canvas.height;
@@ -109,7 +112,7 @@
         type: 'POST',
         data: {
           'image': data,
-          'key_name': prompt("Give this sloth some words")
+          'key_name': slothWords
         },
         success: function(response) {
           return window.location.href = response.path;
