@@ -126,7 +126,38 @@ body, canvas, div {
   top: 0;
   left: 0;
 }
+.uploading {
+  position: fixed;
+  width: 590px;
+  display: none;
+  background: rgba(34, 177, 76, 0.8);
+  border-radius: 20px;
+  padding: 15px;
+}
+.spinning-head {
+  -webkit-animation: rotate 0.9s infinite linear;
+  -moz-animation: rotate 0.9s infinite linear;
+  -ms-animation: rotate 0.9s infinite linear;
+  -o-animation: rotate 0.9s infinite linear;
+}
 
+@-webkit-keyframes rotate {
+  from { -webkit-transform: rotate(0deg) }
+  to { -webkit-transform: rotate(360deg) }
+}
+@-moz-keyframes rotate {
+  from { -moz-transform: rotate(0deg) }
+  to { -moz-transform: rotate(360deg) }
+}
+/* lol */
+@-ms-keyframes rotate {
+  from { -ms-transform: rotate(0deg) }
+  to { -ms-transform: rotate(360deg) }
+}
+@-o-keyframes rotate {
+  from { -o-transform: rotate(0deg) }
+  to { -o-transform: rotate(360deg) }
+}
 
 
 /* FETCH */

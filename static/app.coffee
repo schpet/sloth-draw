@@ -67,6 +67,9 @@ slothdrawin = ->
   drawAction = null
 
   $('#sloth-board').on 'mousedown', (e)->
+    if e.which > 1
+      return
+
     dragging = true
     drawAction(e)
 
@@ -116,6 +119,13 @@ slothdrawin = ->
     if slothWords == ''
       slothWords = new Date().getTime()
 
+    $('.uploading').each ->
+      $(this).css
+        left: $(window).width() / 2 - $(this).width() / 2 + 'px'
+        top: $(window).height() / 2 - $(this).height() / 2 + 'px'
+        display: 'block'
+
+
     output = document.createElement 'canvas'
     output.width = canvas.width
     output.height = canvas.height
@@ -136,6 +146,7 @@ slothdrawin = ->
         window.location.href = response.path
 
       error: (response)->
+        $('.uploading').hide()
         if response.status == 409
           alert 'yo that url is taken :-( try saving again with a different one'
         else

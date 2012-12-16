@@ -62,6 +62,7 @@
     $('#reset').on('click', reset);
     drawAction = null;
     $('#sloth-board').on('mousedown', function(e) {
+      if (e.which > 1) return;
       dragging = true;
       return drawAction(e);
     });
@@ -99,6 +100,13 @@
       slothWords = prompt("Give this sloth some words (or leave it blank)");
       if (slothWords === null) return;
       if (slothWords === '') slothWords = new Date().getTime();
+      $('.uploading').each(function() {
+        return $(this).css({
+          left: $(window).width() / 2 - $(this).width() / 2 + 'px',
+          top: $(window).height() / 2 - $(this).height() / 2 + 'px',
+          display: 'block'
+        });
+      });
       output = document.createElement('canvas');
       output.width = canvas.width;
       output.height = canvas.height;
@@ -118,6 +126,7 @@
           return window.location.href = response.path;
         },
         error: function(response) {
+          $('.uploading').hide();
           if (response.status === 409) {
             return alert('yo that url is taken :-( try saving again with a different one');
           } else {
