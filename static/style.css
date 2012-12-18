@@ -56,6 +56,7 @@ body, canvas, div {
   background-repeat: no-repeat;
 }
 .icon-share {
+  height: 29px;
   background-position: 0 -50px;
 }
 .icon-share:hover {
@@ -138,6 +139,7 @@ body, canvas, div {
   cursor: pointer;
 }
 .help-layover {
+  display: none;
   position: absolute;
   left: 69px;
   top: -740px;

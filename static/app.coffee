@@ -205,6 +205,8 @@ slothdrawin = ->
 
   $(document).on 'change', handleFileSelect
 
+  $('.help-layover').show()
+
 tryToSetup = ->
   # weird bug when opening tab from facebook and it would
   # have a zero height and width

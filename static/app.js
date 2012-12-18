@@ -181,7 +181,8 @@
       }
       return _results;
     };
-    return $(document).on('change', handleFileSelect);
+    $(document).on('change', handleFileSelect);
+    return $('.help-layover').show();
   };
 
   tryToSetup = function() {
