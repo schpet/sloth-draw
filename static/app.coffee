@@ -116,8 +116,7 @@ slothdrawin = ->
     if slothWords == null
       return
 
-    if slothWords == ''
-      slothWords = new Date().getTime()
+    slothWords = new Date().getTime() if slothWords == ''
 
     $('.uploading').each ->
       $(this).css
@@ -151,6 +150,14 @@ slothdrawin = ->
           alert 'yo that url is taken :-( try saving again with a different one'
         else
           alert 'somethings fucked tell peter@peterschilling.org'
+
+  $('#help').on 'mouseenter', ->
+    $('.help-layover').addClass('visible')
+    $('#canvas-container').addClass('dimmed')
+
+  $('#help').on 'mouseleave', ->
+    $('.help-layover').removeClass('visible')
+    $('#canvas-container').removeClass('dimmed')
 
   ## http://stackoverflow.com/a/11583627/692224
   handleFileSelect = (evt) ->
@@ -188,7 +195,6 @@ slothdrawin = ->
             gapX = canvas.width - w
             gapY = canvas.height - h
 
-            reset()
             bgCtx.drawImage(img, gapX / 2, gapY / 2, w, h)
 
           img.src = e.target.result
@@ -200,6 +206,8 @@ slothdrawin = ->
   $(document).on 'change', handleFileSelect
 
 tryToSetup = ->
+  # weird bug when opening tab from facebook and it would
+  # have a zero height and width
   if $(window).width() == 0 || $(window).height() == 0
     setTimeout(tryToSetup, 20)
     return

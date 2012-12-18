@@ -135,6 +135,14 @@
         }
       });
     });
+    $('#help').on('mouseenter', function() {
+      $('.help-layover').addClass('visible');
+      return $('#canvas-container').addClass('dimmed');
+    });
+    $('#help').on('mouseleave', function() {
+      $('.help-layover').removeClass('visible');
+      return $('#canvas-container').removeClass('dimmed');
+    });
     handleFileSelect = function(evt) {
       var f, files, i, reader, _results;
       files = evt.target.files;
@@ -163,7 +171,6 @@
               }
               gapX = canvas.width - w;
               gapY = canvas.height - h;
-              reset();
               return bgCtx.drawImage(img, gapX / 2, gapY / 2, w, h);
             };
             return img.src = e.target.result;

@@ -78,6 +78,7 @@ body, canvas, div {
   background-position: -34px -190px;
 }
 .icon-twitter {
+  height: 24px;
   background-position: 0 -220px;
 }
 .icon-twitter:hover {
@@ -89,10 +90,28 @@ body, canvas, div {
 .icon-facebook:hover {
   background-position: -34px -250px;
 }
+.icon-help {
+  cursor: default;
+  background-position: 0 -280px;
+}
+.icon-help:hover, .icon-help.active {
+  background-position: -34px -280px;
+}
+
 #canvas-container {
   position: relative;
   overflow: hidden;
   height: 100%;
+
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -ms-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+}
+
+#canvas-container.dimmed {
+  opacity: 0.3;
 }
 
 #bg-canvas, #sloth-board {
@@ -117,6 +136,24 @@ body, canvas, div {
 #files {
   opacity: 0.00001;
   cursor: pointer;
+}
+.help-layover {
+  position: absolute;
+  left: 69px;
+  top: -740px;
+  -webkit-transition: top 500ms ease-in-out 100ms;
+  -moz-transition: top 500ms ease-in-out 100ms;
+  -ms-transition: top 500ms ease-in-out 100ms;
+  -o-transition: top 500ms ease-in-out 100ms;
+  transition: top 500ms ease-in-out 100ms;
+}
+.help-layover.visible {
+  top: 0;
+  -webkit-transition: top 500ms;
+  -moz-transition: top 500ms;
+  -ms-transition: top 500ms;
+  -o-transition: top 500ms;
+  transition: top 500ms;
 }
 .upload-container {
   position: relative;

@@ -1,10 +1,16 @@
 import webapp2
 import jinja2
-import os, urllib2, re, base64, urllib
+import os, urllib2, re, base64, urllib, datetime
 from time import gmtime, strftime
 
 from google.appengine.ext import db
 from google.appengine.api import images, files, memcache
+
+version = '1' # cache bustin'
+
+cachetime = 3600 * 24 * 5
+if os.environ.get('SERVER_SOFTWARE').startswith('Development'):
+    cachetime = 1
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -44,7 +50,7 @@ class Draw(webapp2.RequestHandler):
 
 class FetchSloth(webapp2.RequestHandler):
     def get(self, sloth_path):
-        memcached_key = 'sloth:%s' % sloth_path
+        memcached_key = '%s-sloth:%s' % (version, sloth_path)
         sloth_image = memcache.get(memcached_key)
 
         if sloth_image is not None:
@@ -62,7 +68,7 @@ class FetchSloth(webapp2.RequestHandler):
 
             sloth_image = sloth.image
 
-            if not memcache.add(memcached_key, sloth_image, 3600 * 24 * 5):
+            if not memcache.add(memcached_key, sloth_image, cachetime):
                 logging.error('Memcache set failed.')
 
             self.response.headers['Content-Type'] = 'image/png'
@@ -70,7 +76,7 @@ class FetchSloth(webapp2.RequestHandler):
 
 class Fetch(webapp2.RequestHandler):
     def get(self, sloth_path):
-        memcached_key = 'fetch:%s' % sloth_path
+        memcached_key = '%s-fetch:%s' % (version, sloth_path)
 
         fetched = memcache.get(memcached_key)
 
@@ -108,14 +114,15 @@ class Fetch(webapp2.RequestHandler):
 
             fetched = template.render(data)
 
-            if not memcache.add(memcached_key, fetched, 3600 * 24 * 5):
+            if not memcache.add(memcached_key, fetched, cachetime):
                 logging.error('Memcache set failed.')
 
             self.response.out.write(fetched)
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        homepage = memcache.get('homepage')
+        memcached_key = '%s-homepage' % version
+        homepage = memcache.get(memcached_key)
         if homepage is not None:
             self.response.out.write(homepage)
         else:
@@ -123,7 +130,7 @@ class MainPage(webapp2.RequestHandler):
             homepage = template.render({ 'render_date':
                     strftime("%Y-%m-%d %H:%M:%S", gmtime()) })
 
-            if not memcache.add('homepage', homepage, 3600 * 24 * 5):
+            if not memcache.add(memcached_key, homepage, cachetime):
                 logging.error('Memcache set failed.')
 
             self.response.out.write(homepage)
