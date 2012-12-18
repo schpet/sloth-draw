@@ -91,7 +91,6 @@ class Fetch(webapp2.RequestHandler):
                 self.response.out.write('booourns no sloths here check your url!')
                 return
 
-
             # smrt ppl wouldn't hard code this
             # i'm not claiming to be one of them
             share_url_enc = urllib.quote_plus('http://sloths.arerad.com/' +
@@ -107,6 +106,8 @@ class Fetch(webapp2.RequestHandler):
                 'facebook_share_url':
                     'https://www.facebook.com/sharer/sharer.php?u=' +
                     share_url_enc,
+
+                'email_share_url': share_url_enc,
 
                 'render_date':
                     strftime("%Y-%m-%d %H:%M:%S", gmtime())

@@ -98,6 +98,12 @@ body, canvas, div {
 .icon-help:hover, .icon-help.active {
   background-position: -34px -280px;
 }
+.icon-email {
+  background-position: 0 -310px;
+}
+.icon-email:hover {
+  background-position: -34px -310px;
+}
 
 #canvas-container {
   position: relative;

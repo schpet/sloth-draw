@@ -4,13 +4,15 @@
     <meta charset="utf-8">
     <title>{{ sloth_path }} - sloth-drawin' ((-)_(-))</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="a drawing of a sloth">
     <link href="static/style.css" rel="stylesheet">
   </head>
   <body>
     <div class="sidebar">
       <a class="button icon-draw" href="/" title="Sloth Drawin'"></a>
-      <a class="button icon-twitter" href="{{ twitter_share_url }}" title="Share on the twitters" target="_blank"></a>
       <a class="button icon-facebook" href="{{ facebook_share_url }}" title="Share on the fakebook" target="_blank"></a>
+      <a class="button icon-twitter" href="{{ twitter_share_url }}" title="Share on the twitters" target="_blank"></a>
+      <a class="button icon-email" href="mailto:?body={{ email_share_url }}&subject=A%20Sloth%20Drawing%20for%20you" title="email this to a pal"></a>
     </div>
     <div class="fetch-container">
       <img src="{{ sloth_path }}.png" alt="{{ sloth_path }}" />
