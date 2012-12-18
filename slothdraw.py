@@ -6,7 +6,7 @@ from time import gmtime, strftime
 from google.appengine.ext import db
 from google.appengine.api import images, files, memcache
 
-version = '1' # cache bustin'
+version = '2' # cache bustin'
 
 cachetime = 3600 * 24 * 5
 if os.environ.get('SERVER_SOFTWARE').startswith('Development'):
