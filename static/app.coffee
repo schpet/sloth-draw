@@ -11,7 +11,7 @@ slothdrawin = ->
   $canvas = $(canvas)
   offset = $canvas.offset()
 
-  canvas.width = $(window).width() - $('#tools').width()
+  canvas.width = $(window).width() - $('#tools').width() - 1 # border!!
   canvas.height = $(window).height()
   ctx = canvas.getContext '2d'
 

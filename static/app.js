@@ -14,7 +14,7 @@
     canvas = document.getElementById('sloth-board');
     $canvas = $(canvas);
     offset = $canvas.offset();
-    canvas.width = $(window).width() - $('#tools').width();
+    canvas.width = $(window).width() - $('#tools').width() - 1;
     canvas.height = $(window).height();
     ctx = canvas.getContext('2d');
     bgCanvas = document.getElementById('bg-canvas');
