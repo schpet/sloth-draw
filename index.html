@@ -1,55 +1,32 @@
-<!doctype html>
-<!--
+{% extends "base.html" %}
+{% block body %}
+<div id="tools" class="sidebar">
+  <button class="button icon-draw" id="sloth"></button>
+  <button class="button icon-erase" id="eraser"></button>
+  <div class="button upload-container">
+    <button class="icon-upload fake-button"></button>
+    <input type="file" id="files" name="files[]" multiple />
+  </div>
+  <button class="button icon-share" id="save"></button>
+  <button class="button icon-help" id="help" href="#"></button>
+</div>
+<div id="canvas-container">
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="sloth-board"></canvas>
+</div>
+<div class="uploading">
+  <img src="static/img/uploading.png" alt="Uploading"/>
+  <img src="static/img/slothpal.png" class="spinning-head" />
+  <img src="static/img/slothpal.png" class="spinning-head" />
+  <img src="static/img/slothpal.png" class="spinning-head" />
+</div>
 
-  OH HEY WHATS UP
+<div class="help-layover">
+  <img src="static/img/help.png" alt="Sloth Draw" />
+</div>
 
-  you might find this more interesting:
-  https://github.com/peterschilling/sloth-draw
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
+<script src="static/jquery-1.7.1.js"></script>
+<script src="static/app.js"></script>
 
-  just sayin'
-
-
-                                    -- @schpet
-
--->
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>sloth-drawin' ((-)_(-))</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="draw! with sloths!">
-    <link href="static/style.css" rel="stylesheet">
-  </head>
-  <body>
-    <div id="tools" class="sidebar">
-      <button class="button icon-draw" id="sloth"></button>
-      <button class="button icon-erase" id="eraser"></button>
-      <div class="button upload-container">
-        <button class="icon-upload fake-button"></button>
-        <input type="file" id="files" name="files[]" multiple />
-      </div>
-      <button class="button icon-share" id="save"></button>
-      <button class="button icon-help" id="help" href="#"></button>
-    </div>
-    <div id="canvas-container">
-      <canvas id="bg-canvas"></canvas>
-      <canvas id="sloth-board"></canvas>
-    </div>
-    <div class="uploading">
-      <img src="static/img/uploading.png" alt="Uploading"/>
-      <img src="static/img/slothpal.png" class="spinning-head" />
-      <img src="static/img/slothpal.png" class="spinning-head" />
-      <img src="static/img/slothpal.png" class="spinning-head" />
-    </div>
-
-    <div class="help-layover">
-      <img src="static/img/help.png" alt="Sloth Draw" />
-    </div>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="static/app.js"></script>
-    {% include 'analytics.html' %}
-    <!-- render date: {{ render_date }} -->
-  </body>
-</html>
+{% endblock %}

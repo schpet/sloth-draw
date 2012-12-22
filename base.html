@@ -1,0 +1,29 @@
+<!doctype html>
+<!--
+
+  OH HEY WHAT'S UP
+
+  you might find this more interesting:
+  https://github.com/peterschilling/sloth-draw
+
+  just sayin'
+
+
+                                    -- @schpet
+
+
+  this page was rendered at {{ render_date }}
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{% if title %}{{ title }} -{% endif %}sloth-drawin' ((-)_(-))</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="draw! with sloths!">
+    <link href="static/style.css" rel="stylesheet">
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+  </body>
+</html>
