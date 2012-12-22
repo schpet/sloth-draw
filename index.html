@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block body %}
 <div id="tools" class="sidebar">
-  <button class="button icon-draw js-tipsy" id="sloth" title="Slothbrush" data-tipsy-gravity="w"></button>
-  <button class="button icon-erase js-tipsy" id="eraser" title="Moonraser" data-tipsy-gravity="w"></button>
-  <div class="button upload-container js-tipsy" title="Upload a picture to draw on" data-tipsy-gravity="w">
+  <button class="button icon-draw js-tipsy" id="sloth" title="slothbrush" data-tipsy-gravity="w"></button>
+  <button class="button icon-erase js-tipsy" id="eraser" title="moonraser" data-tipsy-gravity="w"></button>
+  <div class="button upload-container js-tipsy" title="upload a picture to draw on" data-tipsy-gravity="w">
     <button class="icon-upload fake-button"></button>
     <input type="file" id="files" name="files[]" multiple />
   </div>
-  <button class="button icon-share js-tipsy" id="save" title="Save your sloth drawing to share it" data-tipsy-gravity="w"></button>
+  <button class="button icon-share js-tipsy" id="save" title="save your sloth drawing and share it" data-tipsy-gravity="w"></button>
   <!--<button class="button icon-help" id="help" href="#"></button>-->
 </div>
 <div id="canvas-container">

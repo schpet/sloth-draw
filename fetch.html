@@ -2,15 +2,20 @@
 {% block body %}
 
 <div class="sidebar">
-  <a class="button icon-draw" href="/" title="Sloth Drawin'"></a>
-  <a class="button icon-facebook" href="{{ facebook_share_url }}" title="Share on the fakebook" target="_blank"></a>
-  <a class="button icon-twitter" href="{{ twitter_share_url }}" title="Share on the twitters" target="_blank"></a>
-  <a class="button icon-email" href="mailto:?body={{ email_share_url }}&subject=A%20Sloth%20Drawing%20for%20you" title="email this to a pal"></a>
+  <a class="button icon-draw js-tipsy" href="/" title="make a sloth drawing! they are rad"></a>
+  <a class="button icon-facebook js-tipsy" href="{{ facebook_share_url }}" title="share on the facebook" target="_blank"></a>
+  <a class="button icon-twitter js-tipsy" href="{{ twitter_share_url }}" title="share on the twitters" target="_blank"></a>
+  <a class="button icon-email js-tipsy" href="mailto:?body={{ email_share_url }}&subject=A%20Sloth%20Drawing%20for%20you" title="email this to a pal"></a>
 </div>
 
 <div class="fetch-container">
   <img src="{{ sloth_path }}.png" alt="{{ sloth_path }}" />
 </div>
 
+<script src="static/lib/jquery-1.7.1.js"></script>
+<script src="static/lib/jquery.tipsy.js"></script>
+<script>
+  $('.js-tipsy').tipsy({ gravity: 'w' })
+</script>
 {% endblock %}
 
