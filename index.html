@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block body %}
 <div id="tools" class="sidebar">
-  <button class="button icon-draw" id="sloth"></button>
-  <button class="button icon-erase" id="eraser"></button>
-  <div class="button upload-container">
+  <button class="button icon-draw js-tipsy" id="sloth" title="Slothbrush" data-tipsy-gravity="w"></button>
+  <button class="button icon-erase js-tipsy" id="eraser" title="Moonraser" data-tipsy-gravity="w"></button>
+  <div class="button upload-container js-tipsy" title="Upload a picture to draw on" data-tipsy-gravity="w">
     <button class="icon-upload fake-button"></button>
     <input type="file" id="files" name="files[]" multiple />
   </div>
-  <button class="button icon-share" id="save"></button>
-  <button class="button icon-help" id="help" href="#"></button>
+  <button class="button icon-share js-tipsy" id="save" title="Save your sloth drawing to share it" data-tipsy-gravity="w"></button>
+  <!--<button class="button icon-help" id="help" href="#"></button>-->
 </div>
 <div id="canvas-container">
   <canvas id="bg-canvas"></canvas>
@@ -26,7 +26,8 @@
 </div>
 
 <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
-<script src="static/jquery-1.7.1.js"></script>
+<script src="static/lib/jquery-1.7.1.js"></script>
+<script src="static/lib/jquery.tipsy.js"></script>
 <script src="static/app.js"></script>
 
 {% endblock %}

@@ -182,7 +182,13 @@
       return _results;
     };
     $(document).on('change', handleFileSelect);
-    return $('.help-layover').show();
+    $('.help-layover').show();
+    $.fn.tipsy.elementOptions = function(ele, options) {
+      return $.extend({}, options, {
+        gravity: $(ele).attr('data-tipsy-gravity') || 'n'
+      });
+    };
+    return $('.js-tipsy').tipsy();
   };
 
   tryToSetup = function() {

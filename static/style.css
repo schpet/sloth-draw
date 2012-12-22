@@ -3,6 +3,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  font-family: 'Helvetica', 'Arial', sans;
 }
 button {
   margin: 0;
@@ -41,6 +42,7 @@ body, canvas, div {
 }
 .sidebar .button {
   margin-left: 21px;
+  margin-right: 20px;
   margin-bottom: 15px;
 }
 
@@ -222,3 +224,20 @@ body, canvas, div {
   color: white;
   height: 100%;
 }
+
+
+
+
+/* TIPSY */
+
+.tipsy { padding: 5px; font-size: 10px; opacity: 0.8; background-repeat: no-repeat;  background-image: url('img/tipsy.gif'); }
+.tipsy-inner { padding: 5px 8px 4px 8px; background-color: black; color: white; max-width: 200px; text-align: center; }
+.tipsy-inner { border-radius:3px; }
+.tipsy-north { background-position: top center; }
+.tipsy-south { background-position: bottom center; }
+.tipsy-east { background-position: right center; }
+.tipsy-west {
+  background-position: left center;
+  margin-left: 21px; /* this is a hack yo */
+}
+

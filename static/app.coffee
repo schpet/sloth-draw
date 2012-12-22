@@ -207,6 +207,14 @@ slothdrawin = ->
 
   $('.help-layover').show()
 
+
+  $.fn.tipsy.elementOptions = (ele, options) ->
+    #return $.metadata ? $.extend({}, options, $(ele).metadata()) : options;
+    $.extend {}, options, {gravity: $(ele).attr('data-tipsy-gravity') || 'n' }
+
+
+  $('.js-tipsy').tipsy()
+
 tryToSetup = ->
   # weird bug when opening tab from facebook and it would
   # have a zero height and width
