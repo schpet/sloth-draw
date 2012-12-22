@@ -8,8 +8,10 @@ from google.appengine.api import images, files, memcache
 
 version = '2' # cache bustin'
 
+development = false
 cachetime = 3600 * 24 * 5
 if os.environ.get('SERVER_SOFTWARE').startswith('Development'):
+    development = true
     cachetime = 1
 
 jinja_environment = jinja2.Environment(
@@ -110,7 +112,9 @@ class Fetch(webapp2.RequestHandler):
                 'email_share_url': share_url_enc,
 
                 'render_date':
-                    strftime("%Y-%m-%d %H:%M:%S", gmtime())
+                    strftime("%Y-%m-%d %H:%M:%S", gmtime()),
+
+                'development': development
             }
 
             fetched = template.render(data)
@@ -128,8 +132,10 @@ class MainPage(webapp2.RequestHandler):
             self.response.out.write(homepage)
         else:
             template = jinja_environment.get_template('index.html')
-            homepage = template.render({ 'render_date':
-                    strftime("%Y-%m-%d %H:%M:%S", gmtime()) })
+            homepage = template.render({
+                    'render_date': strftime("%Y-%m-%d %H:%M:%S", gmtime()),
+                    'development': development
+                })
 
             if not memcache.add(memcached_key, homepage, cachetime):
                 logging.error('Memcache set failed.')
