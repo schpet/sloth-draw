@@ -26,17 +26,34 @@ slothdrawin = ->
 
   sloth.src = 'static/img/slothpal.png'
 
-  drawSloth = (e) ->
+  drawSlothEvent = (e) ->
     return unless imageLoaded
-    x = e.pageX - offset.left
-    y = e.pageY - offset.top
+
+    threshhold =  12
+    switch e.type
+      when 'mousemove', 'mousedown'
+        x = e.pageX - offset.left
+        y = e.pageY - offset.top
+
+        if e.type == 'mousemove' and Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold
+          return
+
+        drawSloth x, y
+
+      when 'touchmove', 'touchstart'
+        e.preventDefault()
+        for touch in e.originalEvent.touches
+          x = touch.pageX - offset.left
+          y = touch.pageY - offset.top
+          if Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold
+            return
+
+          drawSloth x, y
+
+  drawSloth = (x, y) ->
 
     slothsetX = -22
     slothsetY = -22
-
-    threshhold =  16
-    if e.type == 'mousemove' and Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold
-      return
 
     ctx.globalCompositeOperation = "source-over"
     ctx.drawImage(sloth, x + slothsetX, y + slothsetY)
@@ -46,9 +63,20 @@ slothdrawin = ->
     slothcount++
     console.log slothcount
 
-  erase = (e)->
-    x = e.pageX - offset.left
-    y = e.pageY - offset.top
+  eraseEvent = (e) ->
+    switch e.type
+      when 'mousemove', 'mousedown'
+        x = e.pageX - offset.left
+        y = e.pageY - offset.top
+        erase x, y
+      when 'touchmove', 'touchstart'
+        e.preventDefault()
+        for touch in e.originalEvent.touches
+          x = touch.pageX - offset.left - 20
+          y = touch.pageY - offset.top - 20
+          erase x, y
+
+  erase = (x, y) ->
     radius = 20
     ctx.globalCompositeOperation = "destination-out"
     ctx.strokeStyle = "rgba(0,0,0,1)"
@@ -61,22 +89,19 @@ slothdrawin = ->
     ctx.clearRect(0,0, canvas.width, canvas.height)
     bgCtx.clearRect(0, 0, canvas.width, canvas.height)
 
-  $('#reset').on 'click', reset
-
-
   drawAction = null
 
-  $('#sloth-board').on 'mousedown', (e)->
+  $('#sloth-board').on 'mousedown touchstart', (e)->
     if e.which > 1
       return
 
     dragging = true
     drawAction(e)
 
-  $('#sloth-board').on 'mouseup mouseout', (e)->
+  $('#sloth-board').on 'mouseup mouseout touchend', (e)->
     dragging = false
 
-  $('#sloth-board').on 'mousemove', (e)->
+  $('#sloth-board').on 'mousemove touchmove', (e)->
     if !dragging
       return
 
@@ -90,17 +115,17 @@ slothdrawin = ->
     $('#sloth-board').removeClass('erase')
     $('#sloth').addClass('active')
     activateButton($('#sloth'))
-    drawAction = drawSloth
+    drawAction = drawSlothEvent
 
   eraseMode = ->
     $('#sloth-board').addClass('erase')
     activateButton($('#eraser'))
-    drawAction = erase
+    drawAction = eraseEvent
 
   slothMode()
 
-  $('#eraser').on 'click', eraseMode
-  $('#sloth').on 'click', slothMode
+  $('#eraser').on 'click touchstart', eraseMode
+  $('#sloth').on 'click touchstart', slothMode
 
   # http://stackoverflow.com/questions/6388284
   $(document).on 'selectstart dragstart', (e)->
@@ -109,7 +134,7 @@ slothdrawin = ->
   ## http://stackoverflow.com/a/2931668/692224
   document.body.style.MozUserSelect="none"
 
-  $('#save').on 'click', ->
+  $('#save').on 'click touchstart', ->
     slothWords = prompt "Give this sloth some words (or leave it blank)"
 
     # handle user cancel
@@ -184,6 +209,8 @@ slothdrawin = ->
       # Closure to capture the file information.
       reader.onload = ((theFile) ->
         (e) ->
+          # TODO figure out if it's over 2MB and reject it or
+          # figure out how to make it not fuckup on the server
           img = new Image()
           img.onload = ->
 
@@ -221,7 +248,10 @@ slothdrawin = ->
     $.extend {}, options, {gravity: $(ele).attr('data-tipsy-gravity') || 'n' }
 
 
-  $('.js-tipsy').tipsy()
+  touchDevice = 'ontouchstart' of document.documentElement
+  if !touchDevice
+    alert 'not t d'
+  $('.js-tipsy').tipsy() unless touchDevice
 
 tryToSetup = ->
   # weird bug when opening tab from facebook and it would

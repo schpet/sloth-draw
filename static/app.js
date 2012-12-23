@@ -2,7 +2,7 @@
   var slothdrawin, tryToSetup;
 
   slothdrawin = function() {
-    var $canvas, activateButton, bgCanvas, bgCtx, canvas, ctx, dragging, drawAction, drawSloth, erase, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode, slothcount;
+    var $canvas, activateButton, bgCanvas, bgCtx, canvas, ctx, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode, slothcount, touchDevice;
     dragging = false;
     prev = {
       x: -100,
@@ -25,17 +25,38 @@
       return imageLoaded = true;
     };
     sloth.src = 'static/img/slothpal.png';
-    drawSloth = function(e) {
-      var slothsetX, slothsetY, threshhold, x, y;
+    drawSlothEvent = function(e) {
+      var threshhold, touch, x, y, _i, _len, _ref;
       if (!imageLoaded) return;
-      x = e.pageX - offset.left;
-      y = e.pageY - offset.top;
+      threshhold = 12;
+      switch (e.type) {
+        case 'mousemove':
+        case 'mousedown':
+          x = e.pageX - offset.left;
+          y = e.pageY - offset.top;
+          if (e.type === 'mousemove' && Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold) {
+            return;
+          }
+          return drawSloth(x, y);
+        case 'touchmove':
+        case 'touchstart':
+          e.preventDefault();
+          _ref = e.originalEvent.touches;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            touch = _ref[_i];
+            x = touch.pageX - offset.left;
+            y = touch.pageY - offset.top;
+            if (Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold) {
+              return;
+            }
+            drawSloth(x, y);
+          }
+      }
+    };
+    drawSloth = function(x, y) {
+      var slothsetX, slothsetY;
       slothsetX = -22;
       slothsetY = -22;
-      threshhold = 16;
-      if (e.type === 'mousemove' && Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold) {
-        return;
-      }
       ctx.globalCompositeOperation = "source-over";
       ctx.drawImage(sloth, x + slothsetX, y + slothsetY);
       prev.x = x;
@@ -43,10 +64,30 @@
       slothcount++;
       return console.log(slothcount);
     };
-    erase = function(e) {
-      var radius, x, y;
-      x = e.pageX - offset.left;
-      y = e.pageY - offset.top;
+    eraseEvent = function(e) {
+      var touch, x, y, _i, _len, _ref, _results;
+      switch (e.type) {
+        case 'mousemove':
+        case 'mousedown':
+          x = e.pageX - offset.left;
+          y = e.pageY - offset.top;
+          return erase(x, y);
+        case 'touchmove':
+        case 'touchstart':
+          e.preventDefault();
+          _ref = e.originalEvent.touches;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            touch = _ref[_i];
+            x = touch.pageX - offset.left - 20;
+            y = touch.pageY - offset.top - 20;
+            _results.push(erase(x, y));
+          }
+          return _results;
+      }
+    };
+    erase = function(x, y) {
+      var radius;
       radius = 20;
       ctx.globalCompositeOperation = "destination-out";
       ctx.strokeStyle = "rgba(0,0,0,1)";
@@ -59,17 +100,16 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       return bgCtx.clearRect(0, 0, canvas.width, canvas.height);
     };
-    $('#reset').on('click', reset);
     drawAction = null;
-    $('#sloth-board').on('mousedown', function(e) {
+    $('#sloth-board').on('mousedown touchstart', function(e) {
       if (e.which > 1) return;
       dragging = true;
       return drawAction(e);
     });
-    $('#sloth-board').on('mouseup mouseout', function(e) {
+    $('#sloth-board').on('mouseup mouseout touchend', function(e) {
       return dragging = false;
     });
-    $('#sloth-board').on('mousemove', function(e) {
+    $('#sloth-board').on('mousemove touchmove', function(e) {
       if (!dragging) return;
       return drawAction(e);
     });
@@ -81,21 +121,21 @@
       $('#sloth-board').removeClass('erase');
       $('#sloth').addClass('active');
       activateButton($('#sloth'));
-      return drawAction = drawSloth;
+      return drawAction = drawSlothEvent;
     };
     eraseMode = function() {
       $('#sloth-board').addClass('erase');
       activateButton($('#eraser'));
-      return drawAction = erase;
+      return drawAction = eraseEvent;
     };
     slothMode();
-    $('#eraser').on('click', eraseMode);
-    $('#sloth').on('click', slothMode);
+    $('#eraser').on('click touchstart', eraseMode);
+    $('#sloth').on('click touchstart', slothMode);
     $(document).on('selectstart dragstart', function(e) {
       return e.preventDefault();
     });
     document.body.style.MozUserSelect = "none";
-    $('#save').on('click', function() {
+    $('#save').on('click touchstart', function() {
       var data, mime, oCtx, output, slothWords;
       slothWords = prompt("Give this sloth some words (or leave it blank)");
       if (slothWords === null) return;
@@ -203,7 +243,9 @@
         gravity: $(ele).attr('data-tipsy-gravity') || 'n'
       });
     };
-    return $('.js-tipsy').tipsy();
+    touchDevice = 'ontouchstart' in document.documentElement;
+    if (!touchDevice) alert('not t d');
+    if (!touchDevice) return $('.js-tipsy').tipsy();
   };
 
   tryToSetup = function() {
