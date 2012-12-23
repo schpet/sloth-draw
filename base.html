@@ -25,5 +25,8 @@
   </head>
   <body>
     {% block body %}{% endblock %}
+    {% if not development %}
+      {% include "analytics.html" %}
+    {% endif %}
   </body>
 </html>

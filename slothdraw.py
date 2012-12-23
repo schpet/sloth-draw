@@ -6,12 +6,12 @@ from time import gmtime, strftime
 from google.appengine.ext import db
 from google.appengine.api import images, files, memcache
 
-version = '2' # cache bustin'
+version = '3' # cache bustin'
 
-development = false
+development = False
 cachetime = 3600 * 24 * 5
 if os.environ.get('SERVER_SOFTWARE').startswith('Development'):
-    development = true
+    development = True
     cachetime = 1
 
 jinja_environment = jinja2.Environment(

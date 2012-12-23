@@ -3,7 +3,7 @@ server:
 	dev_appserver.py .
 
 deploy:
-	appcfg update .
+	appcfg.py update .
 
 coffee:
 	coffee -wc static/app.coffee
