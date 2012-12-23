@@ -1,4 +1,6 @@
 slothdrawin = ->
+  touchDevice = 'ontouchstart' of document.documentElement
+  clickEvent = if touchDevice then 'touchstart' else 'click'
   dragging = false
   prev = { x: -100, y: -100 }
   slothcount = 0
@@ -124,8 +126,8 @@ slothdrawin = ->
 
   slothMode()
 
-  $('#eraser').on 'click touchstart', eraseMode
-  $('#sloth').on 'click touchstart', slothMode
+  $('#eraser').on clickEvent, eraseMode
+  $('#sloth').on clickEvent, slothMode
 
   # http://stackoverflow.com/questions/6388284
   $(document).on 'selectstart dragstart', (e)->
@@ -134,7 +136,10 @@ slothdrawin = ->
   ## http://stackoverflow.com/a/2931668/692224
   document.body.style.MozUserSelect="none"
 
-  $('#save').on 'click touchstart', ->
+  $('#save').on clickEvent, (e)->
+    e.preventDefault()
+    e.stopPropagation()
+
     slothWords = prompt "Give this sloth some words (or leave it blank)"
 
     # handle user cancel
@@ -247,10 +252,6 @@ slothdrawin = ->
     #return $.metadata ? $.extend({}, options, $(ele).metadata()) : options;
     $.extend {}, options, {gravity: $(ele).attr('data-tipsy-gravity') || 'n' }
 
-
-  touchDevice = 'ontouchstart' of document.documentElement
-  if !touchDevice
-    alert 'not t d'
   $('.js-tipsy').tipsy() unless touchDevice
 
 tryToSetup = ->

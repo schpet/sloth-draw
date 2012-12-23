@@ -2,7 +2,9 @@
   var slothdrawin, tryToSetup;
 
   slothdrawin = function() {
-    var $canvas, activateButton, bgCanvas, bgCtx, canvas, ctx, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode, slothcount, touchDevice;
+    var $canvas, activateButton, bgCanvas, bgCtx, canvas, clickEvent, ctx, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode, slothcount, touchDevice;
+    touchDevice = 'ontouchstart' in document.documentElement;
+    clickEvent = touchDevice ? 'touchstart' : 'click';
     dragging = false;
     prev = {
       x: -100,
@@ -129,14 +131,16 @@
       return drawAction = eraseEvent;
     };
     slothMode();
-    $('#eraser').on('click touchstart', eraseMode);
-    $('#sloth').on('click touchstart', slothMode);
+    $('#eraser').on(clickEvent, eraseMode);
+    $('#sloth').on(clickEvent, slothMode);
     $(document).on('selectstart dragstart', function(e) {
       return e.preventDefault();
     });
     document.body.style.MozUserSelect = "none";
-    $('#save').on('click touchstart', function() {
+    $('#save').on(clickEvent, function(e) {
       var data, mime, oCtx, output, slothWords;
+      e.preventDefault();
+      e.stopPropagation();
       slothWords = prompt("Give this sloth some words (or leave it blank)");
       if (slothWords === null) return;
       if (slothWords === '') slothWords = new Date().getTime();
@@ -243,8 +247,6 @@
         gravity: $(ele).attr('data-tipsy-gravity') || 'n'
       });
     };
-    touchDevice = 'ontouchstart' in document.documentElement;
-    if (!touchDevice) alert('not t d');
     if (!touchDevice) return $('.js-tipsy').tipsy();
   };
 
