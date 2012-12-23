@@ -142,13 +142,21 @@ slothdrawin = ->
         'key_name': slothWords
 
       success: (response)->
-        window.location.href = response.path
+        if response.path?
+          window.location.href = response.path
+        else
+          $('.uploading').hide()
+          _gaq?.push ['_trackEvent', 'error', 'failed upload', JSON.stringify(response)]
+          console.log response
+          window.alert "oh dang sorry this failed to upload sloth draw is REALLY sorry! the image is probably too big or some other bad thing happened"
 
       error: (response)->
         $('.uploading').hide()
         if response.status == 409
+          _gaq?.push ['_trackEvent', 'error', 'url taken', slothWords]
           alert 'yo that url is taken :-( try saving again with a different one'
         else
+          _gaq?.push ['_trackEvent', 'error', 'weird response', response.status]
           alert 'somethings fucked tell peter@peterschilling.org'
 
   $('#help').on 'mouseenter', ->

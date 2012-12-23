@@ -123,13 +123,28 @@
           'key_name': slothWords
         },
         success: function(response) {
-          return window.location.href = response.path;
+          if (response.path != null) {
+            return window.location.href = response.path;
+          } else {
+            $('.uploading').hide();
+            if (typeof _gaq !== "undefined" && _gaq !== null) {
+              _gaq.push(['_trackEvent', 'error', 'failed upload', JSON.stringify(response)]);
+            }
+            console.log(response);
+            return window.alert("oh dang sorry this failed to upload sloth draw is REALLY sorry! the image is probably too big or some other bad thing happened");
+          }
         },
         error: function(response) {
           $('.uploading').hide();
           if (response.status === 409) {
+            if (typeof _gaq !== "undefined" && _gaq !== null) {
+              _gaq.push(['_trackEvent', 'error', 'url taken', slothWords]);
+            }
             return alert('yo that url is taken :-( try saving again with a different one');
           } else {
+            if (typeof _gaq !== "undefined" && _gaq !== null) {
+              _gaq.push(['_trackEvent', 'error', 'weird response', response.status]);
+            }
             return alert('somethings fucked tell peter@peterschilling.org');
           }
         }
