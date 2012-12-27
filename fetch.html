@@ -3,10 +3,17 @@
 
 <div class="sidebar">
   <a class="button icon-draw js-tipsy" href="/" title="make a sloth drawing! they are rad"></a>
-  <a class="button icon-facebook js-tipsy" href="{{ facebook_share_url }}" title="share on the facebook" target="_blank"></a>
+  <div class="js-facebook">
+    <a class="button icon-facebook js-tipsy" href="{{ facebook_share_url }}" title="share on the facebook" target="_blank"></a>
+    <div id="facebook-iframe">
+      <iframe src="//www.facebook.com/plugins/like.php?href={{ email_share_url }}&amp;send=false&amp;layout=box_count&amp;width=450&amp;show_faces=false&amp;font=arial&amp;colorscheme=dark&amp;action=like&amp;height=90" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:90px;" allowTransparency="true"></iframe>
+    </div>
+  </div>
   <a class="button icon-twitter js-tipsy" href="{{ twitter_share_url }}" title="share on the twitters" target="_blank"></a>
   <a class="button icon-email js-tipsy" href="mailto:?body={{ email_share_url }}&subject=A%20Sloth%20Drawing%20for%20you" title="email this to a pal"></a>
   <a href="/about" class="about-link" title="about dis">about</a>
+
+
 </div>
 
 <div class="fetch-container">
@@ -17,5 +24,11 @@
 <script src="static/lib/jquery.tipsy.js"></script>
 <script>
   $('.js-tipsy').tipsy({ gravity: 'w' })
+  $('.js-facebook').on('mouseenter', function(){
+    $('#facebook-iframe').addClass('visible')
+  })
+  $('.js-facebook').on('mouseleave', function(){
+    $('#facebook-iframe').removeClass('visible')
+  })
 </script>
 {% endblock %}
