@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
+
 <div id="tools" class="sidebar">
   <button class="button icon-draw js-tipsy" id="sloth" title="slothbrush" data-tipsy-gravity="w"></button>
   <button class="button icon-erase js-tipsy" id="eraser" title="moonraser" data-tipsy-gravity="w"></button>
@@ -9,7 +10,9 @@
   </div>
   <button class="button icon-share js-tipsy" id="save" title="save your sloth drawing to share it or whatever" data-tipsy-gravity="w"></button>
   <!--<button class="button icon-help" id="help" href="#"></button>-->
+  <a href="/about" class="about-link" title="about dis">about</a>
 </div>
+
 <div id="canvas-container">
   <canvas id="bg-canvas"></canvas>
   <canvas id="sloth-board"></canvas>

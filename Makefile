@@ -7,3 +7,6 @@ deploy:
 
 coffee:
 	coffee -wc static/app.coffee
+
+about:
+	markdown about-copy.md > about-copy.html

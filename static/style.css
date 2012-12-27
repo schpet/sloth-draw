@@ -3,7 +3,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: 'Helvetica', 'Arial', sans;
+  font-family: monospace;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 button {
@@ -16,6 +16,11 @@ button {
 body, canvas, div {
   margin: 0;
   padding: 0;
+}
+a {
+  border-bottom: 1px solid #222;
+  text-decoration: none;
+  color: #222;
 }
 .sloth {
   background: url("img/slothpal.png");
@@ -230,12 +235,36 @@ body, canvas, div {
   height: 100%;
 }
 
-
+.about {
+  max-width: 400px;
+  color: #222;
+  padding-left: 24px;
+  text-align: left;
+  line-height: 1.5;
+}
+.about h1 {
+  margin-top: 10px;
+}
+.about-link {
+  color: #999;
+  position: absolute;
+  bottom: 4px;
+  left: 20px;
+  font-size: 10px;
+  -webkit-transition: color 500ms;
+  -moz-transition: color 500ms;
+  -ms-transition: color 500ms;
+  -o-transition: color 500ms;
+  transition: color 500ms;
+}
+.about-link:hover {
+  color: yellow;
+}
 
 
 /* TIPSY */
 
-.tipsy { padding: 5px; font-size: 10px; opacity: 0.8; background-repeat: no-repeat;  background-image: url('img/tipsy.gif'); }
+.tipsy { padding: 5px; font-size: 12px; opacity: 0.8; background-repeat: no-repeat;  background-image: url('img/tipsy.gif'); }
 .tipsy-inner { padding: 5px 8px 4px 8px; background-color: black; color: white; max-width: 200px; text-align: center; }
 .tipsy-inner { border-radius:3px; }
 .tipsy-north { background-position: top center; }
