@@ -4,7 +4,8 @@ import os, urllib2, re, base64, urllib, datetime
 from time import gmtime, strftime
 
 from google.appengine.ext import db
-from google.appengine.api import images, files, memcache
+from google.appengine.api import images, files, memcache, users
+
 
 version = '3' # cache bustin'
 
@@ -148,10 +149,43 @@ class About(webapp2.RequestHandler):
         self.response.out.write(template.render({ 'title': 'about',
                 'bodyclass': 'about-page'}))
 
+class Gallery(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if user:
+
+            if users.is_current_user_admin():
+                sloths = db.GqlQuery("SELECT * FROM SlothDrawing ORDER BY date DESC LIMIT 500")
+
+                gallery = "<table style='border:none'>"
+                for sloth in sloths:
+                    gallery += """
+                        <tr>
+                            <td>
+                            <a href="%s">%s</a>
+                            </td>
+                            <td>
+                                <span style="color: #666">%s</span>
+                            </td>
+                        </tr>
+                            """ % (sloth.key().name(), sloth.key().name(), sloth.date)
+                gallery += "</table>"
+            else:
+                gallery = 'email peter to get access to this'
+
+            greeting = ("%s<br>sup %s, (<a href=\"%s\">sign out</a>)" %
+                        (gallery, user.nickname(), users.create_logout_url("/")))
+        else:
+            greeting = ("<a href=\"%s\">Sign in</a>" %
+                        users.create_login_url("/gallery"))
+
+        self.response.out.write("<html><body>%s</body></html>" % greeting)
+
+
 app = webapp2.WSGIApplication([(r'/', MainPage),
                                (r'/draw', Draw),
                                (r'/about', About),
-                               #(r'/gallery', Gallery),
+                               (r'/gallery', Gallery),
                                (r'/(\w+)\.png', FetchSloth),
                                (r'/(\w+)', Fetch)],
                               debug=True)
