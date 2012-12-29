@@ -101,7 +101,7 @@ class Fetch(webapp2.RequestHandler):
             template = jinja_environment.get_template('fetch.html')
             data = {
                 'sloth_path': sloth_path,
-
+                'title': sloth_path,
                 'twitter_share_url':
                     'https://twitter.com/share',
 
@@ -145,7 +145,7 @@ class MainPage(webapp2.RequestHandler):
 class About(webapp2.RequestHandler):
     def get(self):
         template = jinja_environment.get_template('about.html')
-        self.response.out.write(template.render({}))
+        self.response.out.write(template.render({ 'title': 'about'}))
 
 app = webapp2.WSGIApplication([(r'/', MainPage),
                                (r'/draw', Draw),
