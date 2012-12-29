@@ -235,8 +235,11 @@ a {
   height: 100%;
 }
 
+.about-page {
+  overflow: auto;
+}
 .about {
-  max-width: 400px;
+  max-width: 500px;
   color: #222;
   padding-left: 24px;
   text-align: left;
@@ -292,4 +295,3 @@ a {
   background-position: left center;
   margin-left: 21px; /* this is a hack yo */
 }
-

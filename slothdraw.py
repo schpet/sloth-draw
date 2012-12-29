@@ -145,11 +145,13 @@ class MainPage(webapp2.RequestHandler):
 class About(webapp2.RequestHandler):
     def get(self):
         template = jinja_environment.get_template('about.html')
-        self.response.out.write(template.render({ 'title': 'about'}))
+        self.response.out.write(template.render({ 'title': 'about',
+                'bodyclass': 'about-page'}))
 
 app = webapp2.WSGIApplication([(r'/', MainPage),
                                (r'/draw', Draw),
                                (r'/about', About),
+                               #(r'/gallery', Gallery),
                                (r'/(\w+)\.png', FetchSloth),
                                (r'/(\w+)', Fetch)],
                               debug=True)

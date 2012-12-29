@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% block body %}
 
-<div class="sidebar">
-  <a class="button icon-draw js-tipsy" href="/" title="make a sloth drawing! they are rad"></a>
-</div>
+  <div class="sidebar">
+    <a class="button icon-draw js-tipsy" href="/" title="make a sloth drawing! they are rad"></a>
+    <div class="clearfix"></div>
+  </div>
 
-<div class="fetch-container about">
-  {% include "about-copy.html" %}
-</div>
+  <div class="fetch-container about">
+    {% include "about-copy.html" %}
+  </div>
 
 <script src="static/lib/jquery-1.7.1.js"></script>
 <script src="static/lib/jquery.tipsy.js"></script>

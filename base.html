@@ -23,7 +23,7 @@
     <meta name="description" content="draw! with sloths!">
     <link href="static/style.css" rel="stylesheet">
   </head>
-  <body>
+  <body{% if bodyclass %} class="{{bodyclass}}"{% endif %}>
     {% block body %}{% endblock %}
     {% if not development %}
       {% include "analytics.html" %}
