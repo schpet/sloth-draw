@@ -116,6 +116,12 @@ a {
 .icon-email:hover {
   background-position: -34px -310px;
 }
+.icon-reset {
+  background-position: 0 -340px;
+}
+.icon-reset:hover {
+  background-position: -34px -340px;
+}
 
 #canvas-container {
   position: relative;

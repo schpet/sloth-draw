@@ -88,8 +88,10 @@ slothdrawin = ->
     ctx.fill()
 
   reset = ->
-    ctx.clearRect(0,0, canvas.width, canvas.height)
-    bgCtx.clearRect(0, 0, canvas.width, canvas.height)
+    yousure = confirm 'you sure you want to get rid of this one?'
+    if yousure
+      ctx.clearRect(0,0, canvas.width, canvas.height)
+      bgCtx.clearRect(0, 0, canvas.width, canvas.height)
 
   drawAction = null
 
@@ -128,6 +130,7 @@ slothdrawin = ->
 
   $('#eraser').on clickEvent, eraseMode
   $('#sloth').on clickEvent, slothMode
+  $('#reset').on clickEvent, reset
 
   # http://stackoverflow.com/questions/6388284
   $(document).on 'selectstart dragstart', (e)->

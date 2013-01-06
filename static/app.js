@@ -99,8 +99,12 @@
       return ctx.fill();
     };
     reset = function() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      return bgCtx.clearRect(0, 0, canvas.width, canvas.height);
+      var yousure;
+      yousure = confirm('you sure you want to get rid of this one?');
+      if (yousure) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return bgCtx.clearRect(0, 0, canvas.width, canvas.height);
+      }
     };
     drawAction = null;
     $('#sloth-board').on('mousedown touchstart', function(e) {
@@ -133,6 +137,7 @@
     slothMode();
     $('#eraser').on(clickEvent, eraseMode);
     $('#sloth').on(clickEvent, slothMode);
+    $('#reset').on(clickEvent, reset);
     $(document).on('selectstart dragstart', function(e) {
       return e.preventDefault();
     });
