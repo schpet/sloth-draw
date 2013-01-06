@@ -9,6 +9,9 @@ nothing would make me happier than you making sloth drawings with it so
 please do that. if you think this is cool maybe we can be friends, let
 me know.
 
+oh! and *mad propz* to [tuxpaint][tp], it's the program that all drawing
+programs aspire to be
+
 ## cool nice things nice people have said
 
 Sloth-Drawin' is the best drawing app of all time.  
@@ -42,3 +45,4 @@ YOU CAN DRAW PICTURES WITH SLOTHS. SERIOUSLY. STOP WHAT YOU ARE DOING AND PROCRA
 [pinboard]: https://twitter.com/Pinboard/status/282673002116689920
 [aaronsw]: https://twitter.com/aaronsw/status/282685799798042625
 [louis]: https://twitter.com/louisshankar/status/284793748662136832
+[tp]: http://tuxpaint.org/

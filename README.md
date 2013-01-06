@@ -4,8 +4,11 @@
 
 # TODO
 
+  - more sloth brushes
+  - size control and smaller default for mobile
+  - rotate images properly
+  - fix 2mb limit for uploaded pix
   - make resize work
-  - faster sloths and a size control
   - mobile design
   - be able to upload bigger pictures
   - some sort of gallery or at least list of links
@@ -19,4 +22,3 @@
   - make it so an error is thrown if they try to use 'draw' as the word
   - post it here:
     http://agentmlovestacos.com/post/3487513646/rad-sloths-are-rad#disqus_thread
-
