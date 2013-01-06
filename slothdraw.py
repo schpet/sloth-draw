@@ -155,7 +155,7 @@ class Gallery(webapp2.RequestHandler):
         if user:
 
             if users.is_current_user_admin():
-                sloths = db.GqlQuery("SELECT * FROM SlothDrawing ORDER BY date DESC LIMIT 500")
+                sloths = db.GqlQuery("SELECT * FROM SlothDrawing ORDER BY date DESC LIMIT 100")
 
                 gallery = "<table style='border:none'>"
                 for sloth in sloths:
