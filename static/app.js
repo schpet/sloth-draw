@@ -2,7 +2,7 @@
   var slothdrawin, tryToSetup;
 
   slothdrawin = function() {
-    var $canvas, activateButton, bgCanvas, bgCtx, canvas, clickEvent, ctx, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, setMoonCursor, size, sloth, slothMode, slothcount, touchDevice;
+    var $canvas, activateButton, bgCanvas, bgCtx, brushTimeout, canvas, clickEvent, ctx, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, setMoonCursor, size, sloth, slothMode, slothcount, touchDevice;
     touchDevice = 'ontouchstart' in document.documentElement;
     clickEvent = touchDevice ? 'touchstart' : 'click';
     dragging = false;
@@ -149,12 +149,21 @@
     $('#eraser').on(clickEvent, eraseMode);
     $('#sloth').on(clickEvent, slothMode);
     $('#reset').on(clickEvent, reset);
+    brushTimeout = null;
     $('#brush-size').on('change', function() {
-      size = $(this).val();
-      size = Math.min(size, 260);
-      size = Math.max(size, 1);
-      sloth.src = "static/img/scaled/slothpal_" + size + ".png";
-      if ($('#sloth-board').hasClass('erase')) return setMoonCursor();
+      var $el;
+      if (brushTimeout != null) {
+        clearTimeout(brushTimeout);
+        brushTimeout = null;
+      }
+      $el = $(this);
+      return brushTimeout = setTimeout((function() {
+        size = $el.val();
+        size = Math.min(size, 260);
+        size = Math.max(size, 1);
+        sloth.src = "static/img/scaled/slothpal_" + size + ".png";
+        if ($('#sloth-board').hasClass('erase')) return setMoonCursor();
+      }), 200);
     });
     $(document).on('selectstart dragstart', function(e) {
       return e.preventDefault();

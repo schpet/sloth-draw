@@ -4,6 +4,7 @@
 
 # TODO
 
+  - use line paths instead of circle arcs perhaps
   - graceful degredation for input type range
   - deal with loading more sloth brushes better
   - better solution than crazy bash script for images idk

@@ -9,7 +9,7 @@ slothdrawin = ->
   imageLoaded = false
 
   # set up canvas
-  canvas = document.getElementById('sloth-board')
+  canvas = document.getElementById 'sloth-board'
   $canvas = $(canvas)
   offset = $canvas.offset()
 
@@ -148,13 +148,22 @@ slothdrawin = ->
   $('#sloth').on clickEvent, slothMode
   $('#reset').on clickEvent, reset
 
+  brushTimeout = null
   $('#brush-size').on 'change', ->
-    size = $(this).val()
-    size = Math.min size, 260
-    size = Math.max size, 1
-    sloth.src = "static/img/scaled/slothpal_#{size}.png"
-    if $('#sloth-board').hasClass 'erase'
-      setMoonCursor()
+    if brushTimeout?
+      clearTimeout brushTimeout
+      brushTimeout = null
+
+    $el = $(this)
+
+    brushTimeout = setTimeout (->
+      size = $el.val()
+      size = Math.min size, 260
+      size = Math.max size, 1
+      sloth.src = "static/img/scaled/slothpal_#{size}.png"
+      if $('#sloth-board').hasClass 'erase'
+        setMoonCursor()
+    ), 200
 
   # http://stackoverflow.com/questions/6388284
   $(document).on 'selectstart dragstart', (e)->
