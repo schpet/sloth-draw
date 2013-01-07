@@ -57,6 +57,16 @@ a {
   user-select: none;
 }
 
+.brush-size-container {
+  display: inline-block;
+}
+.brush-size {
+  -webkit-appearance: slider-vertical;
+  width: 28px;
+  height: 140px;
+  margin-left: 21px;
+}
+
 [class^="icon-"],
 [class*=" icon-"] {
   display: inline-block;
@@ -147,10 +157,15 @@ a {
 }
 #sloth-board {
   cursor: url("img/forsloths.png") 0 0, auto;
+  -webkit-transition: opacity 500ms ease-in-out;
+  -moz-transition: opacity 500ms ease-in-out;
+  -ms-transition: opacity 500ms ease-in-out;
+  -o-transition: opacity 500ms ease-in-out;
+  transition: opacity 500ms ease-in-out;
+
 }
 #sloth-board.erase {
-  cursor: url("img/eraser.png") 0 0, auto;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 #image {
   text-align: center;
@@ -242,6 +257,7 @@ a {
   height: 100%;
 }
 
+
 .about-page {
   overflow: auto;
 }
@@ -261,11 +277,11 @@ a {
   bottom: 4px;
   left: 20px;
   font-size: 10px;
-  -webkit-transition: color 500ms;
-  -moz-transition: color 500ms;
-  -ms-transition: color 500ms;
-  -o-transition: color 500ms;
-  transition: color 500ms;
+  -webkit-transition: color 2000ms;
+  -moz-transition: color 2000ms;
+  -ms-transition: color 2000ms;
+  -o-transition: color 2000ms;
+  transition: color 2000ms;
 }
 .about-link:hover {
   color: yellow;

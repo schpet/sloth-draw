@@ -2,7 +2,7 @@
   var slothdrawin, tryToSetup;
 
   slothdrawin = function() {
-    var $canvas, activateButton, bgCanvas, bgCtx, canvas, clickEvent, ctx, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, sloth, slothMode, slothcount, touchDevice;
+    var $canvas, activateButton, bgCanvas, bgCtx, canvas, clickEvent, ctx, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, setMoonCursor, size, sloth, slothMode, slothcount, touchDevice;
     touchDevice = 'ontouchstart' in document.documentElement;
     clickEvent = touchDevice ? 'touchstart' : 'click';
     dragging = false;
@@ -26,11 +26,12 @@
     sloth.onload = function() {
       return imageLoaded = true;
     };
-    sloth.src = 'static/img/slothpal.png';
+    size = $('#brush-size').val();
+    sloth.src = "static/img/scaled/slothpal_" + size + ".png";
     drawSlothEvent = function(e) {
       var threshhold, touch, x, y, _i, _len, _ref;
       if (!imageLoaded) return;
-      threshhold = 12;
+      threshhold = sloth.width / 3;
       switch (e.type) {
         case 'mousemove':
         case 'mousedown':
@@ -56,11 +57,13 @@
       }
     };
     drawSloth = function(x, y) {
-      var slothsetX, slothsetY;
-      slothsetX = -22;
-      slothsetY = -22;
+      var h, slothsetX, slothsetY, w;
+      w = sloth.width;
+      h = sloth.height;
+      slothsetX = -w / 2;
+      slothsetY = -h / 2;
       ctx.globalCompositeOperation = "source-over";
-      ctx.drawImage(sloth, x + slothsetX, y + slothsetY);
+      ctx.drawImage(sloth, x + slothsetX, y + slothsetY, w, h);
       prev.x = x;
       prev.y = y;
       slothcount++;
@@ -89,12 +92,13 @@
       }
     };
     erase = function(x, y) {
-      var radius;
-      radius = 20;
+      var diameter, radius;
+      diameter = Math.min(size, 128);
+      radius = diameter / 2;
       ctx.globalCompositeOperation = "destination-out";
       ctx.strokeStyle = "rgba(0,0,0,1)";
       ctx.beginPath();
-      ctx.arc(x + radius, y + radius, radius, 0, 2 * Math.PI, false);
+      ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
       ctx.closePath();
       return ctx.fill();
     };
@@ -124,13 +128,20 @@
       return $b.addClass('active');
     };
     slothMode = function() {
-      $('#sloth-board').removeClass('erase');
+      $('#sloth-board').removeClass('erase').css('cursor', '');
       $('#sloth').addClass('active');
       activateButton($('#sloth'));
       return drawAction = drawSlothEvent;
     };
+    setMoonCursor = function() {
+      var hMoonSize, moonSize;
+      moonSize = Math.min(size, 128);
+      hMoonSize = Math.round(moonSize / 2);
+      return $('#sloth-board').css('cursor', "url('static/img/scaled/moonraser_" + moonSize + ".png') " + hMoonSize + " " + hMoonSize + ", auto");
+    };
     eraseMode = function() {
       $('#sloth-board').addClass('erase');
+      setMoonCursor();
       activateButton($('#eraser'));
       return drawAction = eraseEvent;
     };
@@ -138,6 +149,13 @@
     $('#eraser').on(clickEvent, eraseMode);
     $('#sloth').on(clickEvent, slothMode);
     $('#reset').on(clickEvent, reset);
+    $('#brush-size').on('change', function() {
+      size = $(this).val();
+      size = Math.min(size, 260);
+      size = Math.max(size, 1);
+      sloth.src = "static/img/scaled/slothpal_" + size + ".png";
+      if ($('#sloth-board').hasClass('erase')) return setMoonCursor();
+    });
     $(document).on('selectstart dragstart', function(e) {
       return e.preventDefault();
     });
@@ -245,8 +263,11 @@
       }
       return _results;
     };
-    $(document).on('change', handleFileSelect);
+    $('#files').on('change', handleFileSelect);
     $('.help-layover').show();
+    if (document.getElementById('brush-size').type !== 'range') {
+      $('#brush-size').hide();
+    }
     $.fn.tipsy.elementOptions = function(ele, options) {
       return $.extend({}, options, {
         gravity: $(ele).attr('data-tipsy-gravity') || 'n'

@@ -6,12 +6,17 @@
   <button class="button icon-erase js-tipsy" id="eraser" title="moonraser" data-tipsy-gravity="w"></button>
   <div class="button upload-container js-tipsy" title="upload a picture to draw on" data-tipsy-gravity="w">
     <button class="icon-upload fake-button"></button>
-    <input type="file" id="files" name="files[]" multiple />
+    <input type="file" id="files" name="files[]" />
   </div>
   <button class="button icon-share js-tipsy" id="save" title="save your sloth drawing to share it or whatever" data-tipsy-gravity="w"></button>
   <!--<button class="button icon-help" id="help" href="#"></button>-->
   <a href="/about" class="about-link" title="about dis">about</a>
   <button class="button icon-reset js-tipsy" id="reset" title="clear this sloth drawing and start a new one" data-tipsy-gravity="w"></button>
+
+  <!--<input type="range" class="size-control" />-->
+  <div class="js-tipsy brush-size-container" title="brush size" data-tipsy-gravity="w">
+    <input type="range" class="brush-size" id="brush-size" value="50" min="1" max="260" />
+  </div>
 </div>
 
 <div id="canvas-container">

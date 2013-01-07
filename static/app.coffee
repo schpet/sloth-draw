@@ -26,12 +26,13 @@ slothdrawin = ->
   sloth.onload = ->
     imageLoaded = true
 
-  sloth.src = 'static/img/slothpal.png'
+  size = $('#brush-size').val()
+  sloth.src = "static/img/scaled/slothpal_#{size}.png"
 
   drawSlothEvent = (e) ->
     return unless imageLoaded
 
-    threshhold =  12
+    threshhold = sloth.width / 3 # maybe an adjustment for this
     switch e.type
       when 'mousemove', 'mousedown'
         x = e.pageX - offset.left
@@ -53,12 +54,14 @@ slothdrawin = ->
           drawSloth x, y
 
   drawSloth = (x, y) ->
+    w = sloth.width
+    h = sloth.height
 
-    slothsetX = -22
-    slothsetY = -22
+    slothsetX = -w / 2
+    slothsetY = -h / 2
 
     ctx.globalCompositeOperation = "source-over"
-    ctx.drawImage(sloth, x + slothsetX, y + slothsetY)
+    ctx.drawImage(sloth, x + slothsetX, y + slothsetY, w, h)
 
     prev.x = x
     prev.y = y
@@ -79,11 +82,12 @@ slothdrawin = ->
           erase x, y
 
   erase = (x, y) ->
-    radius = 20
+    diameter = Math.min size, 128
+    radius = diameter / 2
     ctx.globalCompositeOperation = "destination-out"
     ctx.strokeStyle = "rgba(0,0,0,1)"
     ctx.beginPath()
-    ctx.arc(x + radius, y + radius, radius, 0 , 2 * Math.PI, false)
+    ctx.arc(x, y, radius, 0 , 2 * Math.PI, false)
     ctx.closePath()
     ctx.fill()
 
@@ -116,13 +120,25 @@ slothdrawin = ->
     $b.addClass 'active'
 
   slothMode = ->
-    $('#sloth-board').removeClass('erase')
+    $('#sloth-board')
+      .removeClass('erase')
+      .css('cursor', '')
     $('#sloth').addClass('active')
     activateButton($('#sloth'))
     drawAction = drawSlothEvent
 
+  setMoonCursor = ->
+    moonSize = Math.min size, 128
+    hMoonSize = Math.round(moonSize / 2)
+    $('#sloth-board')
+      .css('cursor', "url('static/img/scaled/moonraser_#{moonSize}.png') #{hMoonSize} #{hMoonSize}, auto")
+
   eraseMode = ->
-    $('#sloth-board').addClass('erase')
+    $('#sloth-board')
+      .addClass('erase')
+
+    setMoonCursor()
+
     activateButton($('#eraser'))
     drawAction = eraseEvent
 
@@ -131,6 +147,14 @@ slothdrawin = ->
   $('#eraser').on clickEvent, eraseMode
   $('#sloth').on clickEvent, slothMode
   $('#reset').on clickEvent, reset
+
+  $('#brush-size').on 'change', ->
+    size = $(this).val()
+    size = Math.min size, 260
+    size = Math.max size, 1
+    sloth.src = "static/img/scaled/slothpal_#{size}.png"
+    if $('#sloth-board').hasClass 'erase'
+      setMoonCursor()
 
   # http://stackoverflow.com/questions/6388284
   $(document).on 'selectstart dragstart', (e)->
@@ -246,10 +270,12 @@ slothdrawin = ->
       reader.readAsDataURL f
       i++
 
-  $(document).on 'change', handleFileSelect
+  $('#files').on 'change', handleFileSelect
 
   $('.help-layover').show()
 
+  if document.getElementById('brush-size').type != 'range'
+    $('#brush-size').hide()
 
   $.fn.tipsy.elementOptions = (ele, options) ->
     #return $.metadata ? $.extend({}, options, $(ele).metadata()) : options;
@@ -267,3 +293,5 @@ tryToSetup = ->
   slothdrawin()
 
 $(window).load tryToSetup
+
+
