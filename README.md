@@ -4,8 +4,10 @@
 
 # TODO
 
+  - graceful degredation for input type range
+  - deal with loading more sloth brushes better
+  - better solution than crazy bash script for images idk
   - more sloth brushes
-  - size control and smaller default for mobile
   - rotate images properly
   - fix 2mb limit for uploaded pix
   - make resize work
