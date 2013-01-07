@@ -10,7 +10,7 @@ from google.appengine.api import images, files, memcache, users
 #
 # feel free to clear memcached from the appengine dashboard if you forget to
 # bump this
-version = '4'
+version = '5'
 
 development = False
 cachetime = 3600 * 24 * 5
