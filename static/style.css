@@ -40,7 +40,8 @@ a {
 }
 .sidebar .logo {
   margin: 10px;
-  background: url('img/sprite.png');
+  /* this is a really dumb way of expiring shit but hey i didn't say i was smart! */
+  background: url('img/sprite.png?v=1');
   border-radius: 4px;
   display: block;
   width: 48px;
