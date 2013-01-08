@@ -28,11 +28,16 @@ a {
   height: 38px;
   position: absolute;
 }
-
+.range-hint {
+  text-align: center;
+  width: 68px;
+  color: #666;
+}
 .protip {
   position: fixed;
   top: 0;
   right: 100px;
+  pointer-events: none;
 
   -webkit-transition: top 800ms ease-in-out;
   -moz-transition: top 800ms ease-in-out;
@@ -70,6 +75,7 @@ a {
 
 .brush-size-container {
   display: inline-block;
+  width: 49px;
 }
 .brush-size {
   -webkit-appearance: slider-vertical;
