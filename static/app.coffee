@@ -283,8 +283,13 @@ slothdrawin = ->
 
   $('.help-layover').show()
 
+  # hide range slider if it's not supported by the browser
   if document.getElementById('brush-size').type != 'range'
     $('#brush-size').hide()
+
+  setTimeout (->
+    $('.protip').css 'top', '-500px'
+  ), 4000
 
   $.fn.tipsy.elementOptions = (ele, options) ->
     #return $.metadata ? $.extend({}, options, $(ele).metadata()) : options;

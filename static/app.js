@@ -277,6 +277,9 @@
     if (document.getElementById('brush-size').type !== 'range') {
       $('#brush-size').hide();
     }
+    setTimeout((function() {
+      return $('.protip').css('top', '-500px');
+    }), 4000);
     $.fn.tipsy.elementOptions = function(ele, options) {
       return $.extend({}, options, {
         gravity: $(ele).attr('data-tipsy-gravity') || 'n'

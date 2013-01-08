@@ -29,6 +29,17 @@ a {
   position: absolute;
 }
 
+.protip {
+  position: fixed;
+  top: 0;
+  right: 100px;
+
+  -webkit-transition: top 800ms ease-in-out;
+  -moz-transition: top 800ms ease-in-out;
+  -ms-transition: top 800ms ease-in-out;
+  -o-transition: top 800ms ease-in-out;
+  transition: top 800ms ease-in-out;
+}
 .sidebar {
   padding-top: 18px;
   width: 68px;
