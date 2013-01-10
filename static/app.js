@@ -2,7 +2,7 @@
   var slothdrawin, tryToSetup;
 
   slothdrawin = function() {
-    var $canvas, activateButton, bgCanvas, bgCtx, brushTimeout, canvas, clickEvent, ctx, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, handleFileSelect, imageLoaded, offset, prev, reset, setMoonCursor, size, sloth, slothMode, slothcount, touchDevice;
+    var $canvas, $sizeIndicator, activateButton, bgCanvas, bgCtx, brushSize, brushTimeout, canvas, clickEvent, ctx, cursorPositions, dragging, drawAction, drawSloth, drawSlothEvent, erase, eraseEvent, eraseMode, imageLoaded, jump, offset, prev, reset, setBrushImageSize, setBrushSize, setMoonCursor, sloth, slothCount, slothMode, state, states, touchDevice;
     touchDevice = 'ontouchstart' in document.documentElement;
     clickEvent = touchDevice ? 'touchstart' : 'click';
     dragging = false;
@@ -10,7 +10,20 @@
       x: -100,
       y: -100
     };
-    slothcount = 0;
+    cursorPositions = [
+      {
+        x: 0,
+        y: 0
+      }
+    ];
+    slothCount = 0;
+    brushSize = 0;
+    states = {
+      SLOTHING: 0,
+      MOONRASING: 1
+    };
+    state = states.SLOTHING;
+    $sizeIndicator = null;
     sloth = new Image();
     imageLoaded = false;
     canvas = document.getElementById('sloth-board');
@@ -26,35 +39,17 @@
     sloth.onload = function() {
       return imageLoaded = true;
     };
-    size = $('#brush-size').val();
-    sloth.src = "static/img/scaled/slothpal_" + size + ".png";
     drawSlothEvent = function(e) {
-      var threshhold, touch, x, y, _i, _len, _ref;
+      var point, x, y, _i, _len, _results;
       if (!imageLoaded) return;
-      threshhold = sloth.width / 3;
-      switch (e.type) {
-        case 'mousemove':
-        case 'mousedown':
-          x = e.pageX - offset.left;
-          y = e.pageY - offset.top;
-          if (e.type === 'mousemove' && Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold) {
-            return;
-          }
-          return drawSloth(x, y);
-        case 'touchmove':
-        case 'touchstart':
-          e.preventDefault();
-          _ref = e.originalEvent.touches;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            touch = _ref[_i];
-            x = touch.pageX - offset.left;
-            y = touch.pageY - offset.top;
-            if (Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold) {
-              return;
-            }
-            drawSloth(x, y);
-          }
+      _results = [];
+      for (_i = 0, _len = cursorPositions.length; _i < _len; _i++) {
+        point = cursorPositions[_i];
+        x = point.x - offset.left;
+        y = point.y - offset.top;
+        _results.push(drawSloth(x, y));
       }
+      return _results;
     };
     drawSloth = function(x, y) {
       var h, slothsetX, slothsetY, w;
@@ -66,34 +61,22 @@
       ctx.drawImage(sloth, x + slothsetX, y + slothsetY, w, h);
       prev.x = x;
       prev.y = y;
-      slothcount++;
-      return console.log(slothcount);
+      return slothCount++;
     };
     eraseEvent = function(e) {
-      var touch, x, y, _i, _len, _ref, _results;
-      switch (e.type) {
-        case 'mousemove':
-        case 'mousedown':
-          x = e.pageX - offset.left;
-          y = e.pageY - offset.top;
-          return erase(x, y);
-        case 'touchmove':
-        case 'touchstart':
-          e.preventDefault();
-          _ref = e.originalEvent.touches;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            touch = _ref[_i];
-            x = touch.pageX - offset.left - 20;
-            y = touch.pageY - offset.top - 20;
-            _results.push(erase(x, y));
-          }
-          return _results;
+      var point, x, y, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = cursorPositions.length; _i < _len; _i++) {
+        point = cursorPositions[_i];
+        x = point.x - offset.left;
+        y = point.y - offset.top;
+        _results.push(erase(x, y));
       }
+      return _results;
     };
     erase = function(x, y) {
       var diameter, radius;
-      diameter = Math.min(size, 128);
+      diameter = Math.min(brushSize, 128);
       radius = diameter / 2;
       ctx.globalCompositeOperation = "destination-out";
       ctx.strokeStyle = "rgba(0,0,0,1)";
@@ -119,15 +102,43 @@
     $('#sloth-board').on('mouseup mouseout touchend', function(e) {
       return dragging = false;
     });
-    $('#sloth-board').on('mousemove touchmove', function(e) {
+    setInterval((function() {
       if (!dragging) return;
-      return drawAction(e);
+      return drawAction();
+    }), 40);
+    $(document).on('mousemove touchmove', function(e) {
+      var touch, _i, _len, _ref, _results;
+      switch (e.type) {
+        case 'mousemove':
+        case 'mousedown':
+          return cursorPositions = [
+            {
+              x: e.pageX,
+              y: e.pageY
+            }
+          ];
+        case 'touchmove':
+        case 'touchstart':
+          e.preventDefault();
+          cursorPositions = [];
+          _ref = e.originalEvent.touches;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            touch = _ref[_i];
+            _results.push(cursorPositions.push({
+              x: touch.pageX,
+              y: touch.pageY
+            }));
+          }
+          return _results;
+      }
     });
     activateButton = function($b) {
       $(".active").removeClass('active');
       return $b.addClass('active');
     };
     slothMode = function() {
+      state = states.SLOTHING;
       $('#sloth-board').removeClass('erase').css('cursor', '');
       $('#sloth').addClass('active');
       activateButton($('#sloth'));
@@ -135,12 +146,13 @@
     };
     setMoonCursor = function() {
       var hMoonSize, moonSize;
-      moonSize = Math.min(size, 128);
+      moonSize = Math.min(brushSize, 128);
       hMoonSize = Math.round(moonSize / 2);
       return $('#sloth-board').css('cursor', "url('static/img/scaled/moonraser_" + moonSize + ".png') " + hMoonSize + " " + hMoonSize + ", auto");
     };
     eraseMode = function() {
       $('#sloth-board').addClass('erase');
+      state = states.MOONRASING;
       setMoonCursor();
       activateButton($('#eraser'));
       return drawAction = eraseEvent;
@@ -151,19 +163,83 @@
     $('#reset').on(clickEvent, reset);
     brushTimeout = null;
     $('#brush-size').on('change', function() {
-      var $el;
+      var size;
+      size = parseInt($(this).val());
+      return setBrushSize(size, {
+        x: 69,
+        y: cursorPositions[0].y
+      });
+    });
+    setBrushSize = function(size, feedback, updateRange) {
+      if (feedback == null) feedback = null;
+      if (updateRange == null) updateRange = false;
       if (brushTimeout != null) {
         clearTimeout(brushTimeout);
         brushTimeout = null;
       }
-      $el = $(this);
+      if (updateRange) $('#brush-size').val(size);
+      if (feedback != null) {
+        if (!($sizeIndicator != null)) {
+          $sizeIndicator = $("<img src='/static/img/scaled/slothpal_260.png' class='size-indicator' />").appendTo($('body'));
+          $(document).one('mouseup mouseout touchend', function() {
+            if ($sizeIndicator != null) $sizeIndicator.remove();
+            return $sizeIndicator = null;
+          });
+        }
+        if ($sizeIndicator != null) $sizeIndicator.attr('width', size);
+        if ($sizeIndicator != null) {
+          $sizeIndicator.css({
+            'left': "" + feedback.x + "px",
+            'top': "" + feedback.y + "px",
+            'margin-top': -$sizeIndicator.height() / 2
+          });
+        }
+      }
       return brushTimeout = setTimeout((function() {
-        size = $el.val();
-        size = Math.min(size, 260);
-        size = Math.max(size, 1);
-        sloth.src = "static/img/scaled/slothpal_" + size + ".png";
-        if ($('#sloth-board').hasClass('erase')) return setMoonCursor();
+        return setBrushImageSize(size);
       }), 200);
+    };
+    setBrushSize(50, null, true);
+    jump = 20;
+    $('.js-big').on(clickEvent, function() {
+      return setBrushSize(brushSize + jump, null, true);
+    });
+    $('.js-small').on(clickEvent, function() {
+      return setBrushSize(brushSize - jump, null, true);
+    });
+    setBrushImageSize = function(size) {
+      size = Math.min(size, 260);
+      size = Math.max(size, 1);
+      brushSize = parseInt(size);
+      sloth.src = "static/img/scaled/slothpal_" + brushSize + ".png";
+      if ($('#sloth-board').hasClass('erase')) return setMoonCursor();
+    };
+    $("body").on('mousewheel DOMMouseScroll', function(e) {
+      var delta, downscaled;
+      if (e.type === 'mousewheel') {
+        delta = e.originalEvent.wheelDelta;
+      } else {
+        delta = e.originalEvent.detail * 5;
+      }
+      downscaled = delta / 5;
+      if (Math.abs(downscaled) > 1) delta = downscaled;
+      setBrushImageSize(brushSize + delta);
+      if (state === states.SLOTHING) {
+        setBrushSize(brushSize, {
+          x: cursorPositions[0].x - brushSize / 2,
+          y: cursorPositions[0].y
+        }, true);
+      } else {
+        setBrushSize(brushSize, null, true);
+      }
+      if (this.hideSizeIndicator != null) {
+        clearTimeout(this.hideSizeIndicator);
+        this.hideSizeIndicator = null;
+      }
+      return this.hideSizeIndicator = setTimeout((function() {
+        if ($sizeIndicator != null) $sizeIndicator.remove();
+        return $sizeIndicator = null;
+      }), 500);
     });
     $(document).on('selectstart dragstart', function(e) {
       return e.preventDefault();
@@ -176,6 +252,7 @@
       slothWords = prompt("Give this sloth some words (or leave it blank)");
       if (slothWords === null) return;
       if (slothWords === '') slothWords = new Date().getTime();
+      _gaq.push(['_trackEvent', 'saved', 'sloth count', slothWords, slothCount]);
       $('.uploading').each(function() {
         return $(this).css({
           left: $(window).width() / 2 - $(this).width() / 2 + 'px',
@@ -234,7 +311,7 @@
       $('.help-layover').removeClass('visible');
       return $('#canvas-container').removeClass('dimmed');
     });
-    handleFileSelect = function(evt) {
+    $('#files').on('change', function(evt) {
       var f, files, i, reader, _results;
       files = evt.target.files;
       i = 0;
@@ -271,11 +348,10 @@
         _results.push(i++);
       }
       return _results;
-    };
-    $('#files').on('change', handleFileSelect);
+    });
     $('.help-layover').show();
     if (document.getElementById('brush-size').type !== 'range') {
-      $('#brush-size').hide();
+      $('.brush-size-container').addClass('unsupported');
     }
     setTimeout((function() {
       return $('.protip').css('top', '-500px');

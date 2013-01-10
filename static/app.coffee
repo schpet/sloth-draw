@@ -3,7 +3,16 @@ slothdrawin = ->
   clickEvent = if touchDevice then 'touchstart' else 'click'
   dragging = false
   prev = { x: -100, y: -100 }
-  slothcount = 0
+  cursorPositions = [{ x: 0, y: 0 }]
+  slothCount = 0
+  brushSize = 0
+  states =
+    SLOTHING: 0
+    MOONRASING: 1
+  state = states.SLOTHING
+
+  $sizeIndicator = null
+
 
   sloth = new Image()
   imageLoaded = false
@@ -26,32 +35,13 @@ slothdrawin = ->
   sloth.onload = ->
     imageLoaded = true
 
-  size = $('#brush-size').val()
-  sloth.src = "static/img/scaled/slothpal_#{size}.png"
-
   drawSlothEvent = (e) ->
     return unless imageLoaded
 
-    threshhold = sloth.width / 3 # maybe an adjustment for this
-    switch e.type
-      when 'mousemove', 'mousedown'
-        x = e.pageX - offset.left
-        y = e.pageY - offset.top
-
-        if e.type == 'mousemove' and Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold
-          return
-
-        drawSloth x, y
-
-      when 'touchmove', 'touchstart'
-        e.preventDefault()
-        for touch in e.originalEvent.touches
-          x = touch.pageX - offset.left
-          y = touch.pageY - offset.top
-          if Math.abs(x - prev.x) < threshhold && Math.abs(y - prev.y) < threshhold
-            return
-
-          drawSloth x, y
+    for point in cursorPositions
+      x = point.x - offset.left
+      y = point.y - offset.top
+      drawSloth x, y
 
   drawSloth = (x, y) ->
     w = sloth.width
@@ -65,24 +55,16 @@ slothdrawin = ->
 
     prev.x = x
     prev.y = y
-    slothcount++
-    console.log slothcount
+    slothCount++
 
   eraseEvent = (e) ->
-    switch e.type
-      when 'mousemove', 'mousedown'
-        x = e.pageX - offset.left
-        y = e.pageY - offset.top
-        erase x, y
-      when 'touchmove', 'touchstart'
-        e.preventDefault()
-        for touch in e.originalEvent.touches
-          x = touch.pageX - offset.left - 20
-          y = touch.pageY - offset.top - 20
-          erase x, y
+    for point in cursorPositions
+      x = point.x - offset.left
+      y = point.y - offset.top
+      erase x, y
 
   erase = (x, y) ->
-    diameter = Math.min size, 128
+    diameter = Math.min brushSize, 128
     radius = diameter / 2
     ctx.globalCompositeOperation = "destination-out"
     ctx.strokeStyle = "rgba(0,0,0,1)"
@@ -109,17 +91,34 @@ slothdrawin = ->
   $('#sloth-board').on 'mouseup mouseout touchend', (e)->
     dragging = false
 
-  $('#sloth-board').on 'mousemove touchmove', (e)->
+  #$('#sloth-board').on 'mousemove touchmove', (e)->
+  setInterval (->
     if !dragging
       return
 
-    drawAction(e)
+    drawAction()
+  ), 40
+
+  $(document).on 'mousemove touchmove', (e)->
+    switch e.type
+      when 'mousemove', 'mousedown'
+        cursorPositions = [
+          { x: e.pageX, y: e.pageY}
+        ]
+      when 'touchmove', 'touchstart'
+        e.preventDefault()
+        cursorPositions = []
+        for touch in e.originalEvent.touches
+          cursorPositions.push
+            x: touch.pageX
+            y: touch.pageY
 
   activateButton = ($b)->
     $(".active").removeClass 'active'
     $b.addClass 'active'
 
   slothMode = ->
+    state = states.SLOTHING
     $('#sloth-board')
       .removeClass('erase')
       .css('cursor', '')
@@ -128,7 +127,7 @@ slothdrawin = ->
     drawAction = drawSlothEvent
 
   setMoonCursor = ->
-    moonSize = Math.min size, 128
+    moonSize = Math.min brushSize, 128
     hMoonSize = Math.round(moonSize / 2)
     $('#sloth-board')
       .css('cursor', "url('static/img/scaled/moonraser_#{moonSize}.png') #{hMoonSize} #{hMoonSize}, auto")
@@ -137,6 +136,7 @@ slothdrawin = ->
     $('#sloth-board')
       .addClass('erase')
 
+    state = states.MOONRASING
     setMoonCursor()
 
     activateButton($('#eraser'))
@@ -150,20 +150,83 @@ slothdrawin = ->
 
   brushTimeout = null
   $('#brush-size').on 'change', ->
+    size = parseInt $(this).val()
+    setBrushSize size, { x: 69, y: cursorPositions[0].y }
+
+  setBrushSize = (size, feedback = null, updateRange = false)->
+
     if brushTimeout?
       clearTimeout brushTimeout
       brushTimeout = null
 
-    $el = $(this)
+    $('#brush-size').val(size) if updateRange
+
+    if feedback?
+      if !$sizeIndicator?
+        # consider using slothpal big one
+        # this could be in the dom i guess w/e
+        $sizeIndicator = $("<img src='/static/img/scaled/slothpal_260.png' class='size-indicator' />").appendTo($('body'))
+        $(document).one 'mouseup mouseout touchend', ->
+          $sizeIndicator?.remove()
+          $sizeIndicator = null
+
+      $sizeIndicator?.attr 'width', size
+      $sizeIndicator?.css
+        'left': "#{feedback.x}px"
+        'top': "#{feedback.y}px"
+        'margin-top': - $sizeIndicator.height() / 2
 
     brushTimeout = setTimeout (->
-      size = $el.val()
-      size = Math.min size, 260
-      size = Math.max size, 1
-      sloth.src = "static/img/scaled/slothpal_#{size}.png"
-      if $('#sloth-board').hasClass 'erase'
-        setMoonCursor()
+      setBrushImageSize(size)
     ), 200
+
+  setBrushSize 50, null, true
+
+  jump = 20
+
+  $('.js-big').on clickEvent, ->
+    setBrushSize brushSize + jump, null, true
+
+  $('.js-small').on clickEvent, ->
+    setBrushSize brushSize - jump, null, true
+
+  setBrushImageSize = (size)->
+    size = Math.min size, 260
+    size = Math.max size, 1
+    brushSize = parseInt size
+
+    sloth.src = "static/img/scaled/slothpal_#{brushSize}.png"
+    if $('#sloth-board').hasClass 'erase'
+      setMoonCursor()
+
+
+  $("body").on 'mousewheel DOMMouseScroll', (e)->
+
+    if e.type == 'mousewheel'
+      delta = e.originalEvent.wheelDelta
+    else
+      delta = e.originalEvent.detail * 5
+      #console.log  e.originalEvent.detail
+
+    downscaled = delta / 5
+
+    if Math.abs(downscaled) > 1
+      delta = downscaled
+
+    setBrushImageSize(brushSize + delta )
+    if state == states.SLOTHING
+      setBrushSize brushSize, { x: cursorPositions[0].x - brushSize / 2, y: cursorPositions[0].y }, true
+    else
+      setBrushSize brushSize, null, true
+
+    if @hideSizeIndicator?
+      clearTimeout @hideSizeIndicator
+      @hideSizeIndicator = null
+
+    @hideSizeIndicator = setTimeout (->
+      $sizeIndicator?.remove()
+      $sizeIndicator = null
+    ), 500
 
   # http://stackoverflow.com/questions/6388284
   $(document).on 'selectstart dragstart', (e)->
@@ -176,6 +239,7 @@ slothdrawin = ->
     e.preventDefault()
     e.stopPropagation()
 
+
     slothWords = prompt "Give this sloth some words (or leave it blank)"
 
     # handle user cancel
@@ -183,6 +247,8 @@ slothdrawin = ->
       return
 
     slothWords = new Date().getTime() if slothWords == ''
+
+    _gaq.push ['_trackEvent', 'saved', 'sloth count', slothWords, slothCount]
 
     $('.uploading').each ->
       $(this).css
@@ -234,7 +300,7 @@ slothdrawin = ->
     $('#canvas-container').removeClass('dimmed')
 
   ## http://stackoverflow.com/a/11583627/692224
-  handleFileSelect = (evt) ->
+  $('#files').on 'change', (evt)->
     files = evt.target.files # FileList object
 
     # Loop through the FileList and render image files as thumbnails.
@@ -279,13 +345,12 @@ slothdrawin = ->
       reader.readAsDataURL f
       i++
 
-  $('#files').on 'change', handleFileSelect
 
   $('.help-layover').show()
 
   # hide range slider if it's not supported by the browser
   if document.getElementById('brush-size').type != 'range'
-    $('#brush-size').hide()
+    $('.brush-size-container').addClass 'unsupported'
 
   setTimeout (->
     $('.protip').css 'top', '-500px'

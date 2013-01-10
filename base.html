@@ -27,6 +27,8 @@
     {% block body %}{% endblock %}
     {% if not development %}
       {% include "analytics.html" %}
+    {% else %}
+      <script> _gaq = {}; _gaq.push = function(stuff){ console.log(stuff); } </script>
     {% endif %}
   </body>
 </html>

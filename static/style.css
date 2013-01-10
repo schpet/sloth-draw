@@ -83,6 +83,11 @@ a {
   height: 140px;
   margin-left: 21px;
 }
+.brush-size-container.unsupported .brush-size {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 20px;
+}
 
 [class^="icon-"],
 [class*=" icon-"] {
@@ -229,6 +234,14 @@ a {
   background: rgba(34, 177, 76, 0.8);
   border-radius: 20px;
   padding: 15px;
+}
+.size-indicator {
+  position: absolute;
+  z-index: 100000;
+  pointer-events: none;
+}
+.range-hint {
+  cursor: pointer;
 }
 .spinning-head {
   -webkit-animation: rotate 0.9s infinite linear;
