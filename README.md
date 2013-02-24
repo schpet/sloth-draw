@@ -4,12 +4,12 @@
 
 # TODO
 
-  - exponential increment
-  - time based brush
+  - prevent you from losing your work!!!
+  - flow control
+  - loading sloth indication
+  - unbreak range thing on ipad
+  - exponential size changing so you there's more control over the small
   - faster uploads! and error reporting? figure out why some break
-  - clicking on big and small should bump the slider
-  - analytics event for save to figure out if i'm making things better
-    or worse
   - feedback for sloth size changing
   - more room for the small on the sloth slider
   - social media stuff for thumbnails

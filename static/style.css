@@ -32,6 +32,7 @@ a {
   text-align: center;
   width: 68px;
   color: #666;
+  padding: 10px 0;
 }
 .protip {
   position: fixed;
@@ -45,6 +46,15 @@ a {
   -o-transition: top 800ms ease-in-out;
   transition: top 800ms ease-in-out;
 }
+@media only screen and (max-device-width: 480px) {
+  .protip {
+    display: none;
+  }
+  .brush-size {
+    display: none;
+  }
+}
+
 .sidebar {
   padding-top: 18px;
   width: 68px;
