@@ -1,7 +1,10 @@
-"use strict"
+"use strict" # ;-)
 
-class SlothDrawin
+class window.SlothDrawin
   constructor: ->
+    # moved set up junk into it's own desperately-needs-refactoring class
+
+  setUp: ->
     @touchDevice = 'ontouchstart' of document.documentElement
     @clickEvent = if @touchDevice then 'touchstart' else 'click'
     @dragging = false
@@ -10,9 +13,11 @@ class SlothDrawin
     @previousPosition = null
     @slothCount = 0
     @brushSize = 0
+
     @states =
       SLOTHING: 0
       MOONRASING: 1
+
     @state = @states.SLOTHING
 
     @$sizeIndicator = null
@@ -48,6 +53,7 @@ class SlothDrawin
       @drawAction(e)
 
     $('#sloth-board').on 'mouseup mouseout touchend', (e)=>
+      @previousPosition = null
       @dragging = false
 
     #$('#sloth-board').on 'mousemove touchmove', (e)->
@@ -263,27 +269,72 @@ class SlothDrawin
     time = new Date().getTime()
     startTime = time if !startTime?
 
-    for point in @cursorPositions
-      x = point.x - @offset.left
-      y = point.y - @offset.top
-      @drawSloth x, y
+    drawPoints = (pointsArray)=>
+      for point in pointsArray
+        if (point instanceof Array)
+          x = point[0] - @offset.left
+          y = point[1] - @offset.top
+        else
+          x = point.x - @offset.left
+          y = point.y - @offset.top
 
-      window.points[time - startTime] =
-        x: x
-        y: y
+        @drawSloth x, y
 
-    if @previousPosition? and @cursorPositions.length == 1
-      @interpolatePoints(@cursorPositions[0].x, @previousPosition.x,
-          @cursorPositions[0].y, @previousPosition.y)
+
+
+    if @cursorPositions.length > 1
+      drawPoints @cursorPositions
+    else if @previousPosition?
+
+      x1 = @previousPosition.x
+      y1 = @previousPosition.y
+
+      x2 = @cursorPositions[0].x
+      y2 = @cursorPositions[0].y
+
+      dist = @distanceBetweenTwoPoints(x1, y1, x2, y2)
+
+      points = @interpolatePoints(x1, y1, x2, y2, Math.max(1, dist / (@brushSize / 5)))
+
+      drawPoints points
+    else
+      drawPoints @cursorPositions
 
     @previousPosition = @cursorPositions[0]
 
+  interpolateNumbers: (a, b, count) ->
+    return [] if count == 0
 
+    dist = b - a
 
-  interpolatePoints: (x1, y1, x2, y2, minDistance = 5)->
-    # distance between the two points
-    distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
-    #console.log distance
+    return [ a + dist / 2 ] if count == 1
+
+    interpolated = []
+    for i in [0..count - 1]
+      interpolated.push (dist * (i / (count - 1))) + a
+
+    interpolated
+
+  interpolatePoints: (x1, y1, x2, y2, count)->
+    return [ ] if count == 0
+    count = Math.floor count
+    interpolatedX = @interpolateNumbers(x1, x2, count)
+    interpolatedY = @interpolateNumbers(y1, y2, count)
+
+    interpolated = []
+    for i in [0..count - 1]
+      interpolated.push [ interpolatedX[i], interpolatedY[i] ]
+
+    interpolated
+
+  distanceBetweenTwoPoints: (x1, y1, x2, y2)->
+    distY = Math.abs y2 - y1
+    distX = Math.abs x2 - x1
+
+    return distX if distY == 0
+    return distY if distX == 0
+
+    Math.sqrt Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2)
 
   drawSloth: (x, y) =>
     w = @sloth.width
@@ -315,10 +366,9 @@ class SlothDrawin
     @ctx.fill()
 
   reset: =>
-    yousure = confirm 'you sure you want to get rid of this one?'
-    if yousure
-      @ctx.clearRect(0,0, @canvas.width, @canvas.height)
-      @bgCtx.clearRect(0, 0, @canvas.width, @canvas.height)
+    if confirm 'you sure you want to get rid of this one?'
+      @ctx.clearRect 0, 0, @canvas.width, @canvas.height
+      @bgCtx.clearRect 0, 0, @canvas.width, @canvas.height
 
   activateButton: ($b)=>
     $(".active").removeClass 'active'
@@ -390,15 +440,6 @@ class SlothDrawin
 
     @setBrushImageSize(size)
 
-tryToSetup = ->
-  # weird bug when opening tab from facebook and it would
-  # have a zero height and width
-  if $(window).width() == 0 || $(window).height() == 0
-    setTimeout(tryToSetup, 20)
-    return
-
-  new SlothDrawin()
-
-$(window).load tryToSetup
-
+  slothMe: ->
+    "sloth"
 

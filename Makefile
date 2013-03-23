@@ -6,7 +6,7 @@ deploy:
 	appcfg.py update .
 
 coffee:
-	coffee -wc static/app.coffee
+	coffee -wc static/*.coffee static/spec/*.coffee
 
 about:
 	markdown about-copy.md > about-copy.html

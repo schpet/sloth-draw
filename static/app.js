@@ -2,10 +2,9 @@
 (function() {
   "use strict";
 
-  var SlothDrawin, tryToSetup,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  SlothDrawin = (function() {
+  window.SlothDrawin = (function() {
 
     function SlothDrawin() {
       this.setBrushSize = __bind(this.setBrushSize, this);
@@ -30,6 +29,9 @@
 
       this.drawSlothEvent = __bind(this.drawSlothEvent, this);
 
+    }
+
+    SlothDrawin.prototype.setUp = function() {
       var jump,
         _this = this;
       this.touchDevice = 'ontouchstart' in document.documentElement;
@@ -79,6 +81,7 @@
         return _this.drawAction(e);
       });
       $('#sloth-board').on('mouseup mouseout touchend', function(e) {
+        _this.previousPosition = null;
         return _this.dragging = false;
       });
       setInterval((function() {
@@ -291,12 +294,13 @@
         });
       };
       if (!this.touchDevice) {
-        $('.js-tipsy').tipsy();
+        return $('.js-tipsy').tipsy();
       }
-    }
+    };
 
     SlothDrawin.prototype.drawSlothEvent = function(e) {
-      var point, startTime, time, x, y, _i, _len, _ref;
+      var dist, drawPoints, points, startTime, time, x1, x2, y1, y2,
+        _this = this;
       if (!this.imageLoaded) {
         return;
       }
@@ -304,29 +308,80 @@
       if (!(typeof startTime !== "undefined" && startTime !== null)) {
         startTime = time;
       }
-      _ref = this.cursorPositions;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        point = _ref[_i];
-        x = point.x - this.offset.left;
-        y = point.y - this.offset.top;
-        this.drawSloth(x, y);
-        window.points[time - startTime] = {
-          x: x,
-          y: y
-        };
-      }
-      if ((this.previousPosition != null) && this.cursorPositions.length === 1) {
-        this.interpolatePoints(this.cursorPositions[0].x, this.previousPosition.x, this.cursorPositions[0].y, this.previousPosition.y);
+      drawPoints = function(pointsArray) {
+        var point, x, y, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = pointsArray.length; _i < _len; _i++) {
+          point = pointsArray[_i];
+          if (point instanceof Array) {
+            x = point[0] - _this.offset.left;
+            y = point[1] - _this.offset.top;
+          } else {
+            x = point.x - _this.offset.left;
+            y = point.y - _this.offset.top;
+          }
+          _results.push(_this.drawSloth(x, y));
+        }
+        return _results;
+      };
+      if (this.cursorPositions.length > 1) {
+        drawPoints(this.cursorPositions);
+      } else if (this.previousPosition != null) {
+        x1 = this.previousPosition.x;
+        y1 = this.previousPosition.y;
+        x2 = this.cursorPositions[0].x;
+        y2 = this.cursorPositions[0].y;
+        dist = this.distanceBetweenTwoPoints(x1, y1, x2, y2);
+        points = this.interpolatePoints(x1, y1, x2, y2, Math.max(1, dist / (this.brushSize / 5)));
+        drawPoints(points);
+      } else {
+        drawPoints(this.cursorPositions);
       }
       return this.previousPosition = this.cursorPositions[0];
     };
 
-    SlothDrawin.prototype.interpolatePoints = function(x1, y1, x2, y2, minDistance) {
-      var distance;
-      if (minDistance == null) {
-        minDistance = 5;
+    SlothDrawin.prototype.interpolateNumbers = function(a, b, count) {
+      var dist, i, interpolated, _i, _ref;
+      if (count === 0) {
+        return [];
       }
-      return distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+      dist = b - a;
+      if (count === 1) {
+        return [a + dist / 2];
+      }
+      interpolated = [];
+      for (i = _i = 0, _ref = count - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        interpolated.push((dist * (i / (count - 1))) + a);
+      }
+      return interpolated;
+    };
+
+    SlothDrawin.prototype.interpolatePoints = function(x1, y1, x2, y2, count) {
+      var i, interpolated, interpolatedX, interpolatedY, _i, _ref;
+      if (count === 0) {
+        return [];
+      }
+      count = Math.floor(count);
+      interpolatedX = this.interpolateNumbers(x1, x2, count);
+      interpolatedY = this.interpolateNumbers(y1, y2, count);
+      interpolated = [];
+      for (i = _i = 0, _ref = count - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        interpolated.push([interpolatedX[i], interpolatedY[i]]);
+      }
+      return interpolated;
+    };
+
+    SlothDrawin.prototype.distanceBetweenTwoPoints = function(x1, y1, x2, y2) {
+      var distX, distY;
+      distY = Math.abs(y2 - y1);
+      distX = Math.abs(x2 - x1);
+      if (distY === 0) {
+        return distX;
+      }
+      if (distX === 0) {
+        return distY;
+      }
+      return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     };
 
     SlothDrawin.prototype.drawSloth = function(x, y) {
@@ -368,9 +423,7 @@
     };
 
     SlothDrawin.prototype.reset = function() {
-      var yousure;
-      yousure = confirm('you sure you want to get rid of this one?');
-      if (yousure) {
+      if (confirm('you sure you want to get rid of this one?')) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         return this.bgCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       }
@@ -460,18 +513,12 @@
       return this.setBrushImageSize(size);
     };
 
+    SlothDrawin.prototype.slothMe = function() {
+      return "sloth";
+    };
+
     return SlothDrawin;
 
   })();
-
-  tryToSetup = function() {
-    if ($(window).width() === 0 || $(window).height() === 0) {
-      setTimeout(tryToSetup, 20);
-      return;
-    }
-    return new SlothDrawin();
-  };
-
-  $(window).load(tryToSetup);
 
 }).call(this);

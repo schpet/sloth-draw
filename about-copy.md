@@ -41,7 +41,7 @@ YOU CAN DRAW PICTURES WITH SLOTHS. SERIOUSLY. STOP WHAT YOU ARE DOING AND PROCRA
 [4]: https://twitter.com/schpet/status/278013441640386560
 [5]: https://twitter.com/schpet/status/278034196537167872
 [6]: http://reginabouguyon.blogspot.ca/
-[gh]: https://github.com/peterschilling/sloth-draw
+[gh]: https://github.com/schpet/sloth-draw
 [appengine]: https://developers.google.com/appengine/
 [buzzfeed]: http://www.buzzfeed.com/alannaokun/now-you-can-draw-using-sloths
 [alanna]: https://twitter.com/Alannabean/status/284724734019633153
