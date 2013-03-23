@@ -418,7 +418,7 @@ class window.SlothDrawin
       ), 200
 
   setBrushSize: (size, feedback = null, updateRange = false)=>
-    $('#brush-size').val(size) if @updateRange
+    $('#brush-size').val(size) if updateRange
 
     size = Math.min size, 260
     size = Math.max size, 4

@@ -483,7 +483,7 @@
       if (updateRange == null) {
         updateRange = false;
       }
-      if (this.updateRange) {
+      if (updateRange) {
         $('#brush-size').val(size);
       }
       size = Math.min(size, 260);
